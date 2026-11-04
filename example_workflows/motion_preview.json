@@ -5,14 +5,14 @@
     {
       "id": 1,
       "type": "CinematicMotionGallery",
-      "title": "CinematicMotionGallery - 选择运镜素材",
+      "title": "电影参考 - 选择镜头示例",
       "pos": [
         30,
         30
       ],
       "size": [
-        410,
-        560
+        390,
+        470
       ],
       "flags": {},
       "order": 0,
@@ -20,12 +20,7 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "prompt_zh",
-          "type": "STRING",
-          "links": null
-        },
-        {
-          "name": "prompt_en",
+          "name": "prompt",
           "type": "STRING",
           "links": null
         },
@@ -37,22 +32,12 @@
           ]
         },
         {
-          "name": "description_zh",
+          "name": "description",
           "type": "STRING",
           "links": null
         },
         {
-          "name": "description_en",
-          "type": "STRING",
-          "links": null
-        },
-        {
-          "name": "example_prompt_zh",
-          "type": "STRING",
-          "links": null
-        },
-        {
-          "name": "example_prompt_en",
+          "name": "example_prompt",
           "type": "STRING",
           "links": null
         },
@@ -145,7 +130,7 @@
     [
       1,
       1,
-      2,
+      1,
       2,
       0,
       "IMAGE"
@@ -153,7 +138,7 @@
     [
       2,
       1,
-      7,
+      4,
       3,
       0,
       "VIDEO"

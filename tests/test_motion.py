@@ -24,7 +24,7 @@ class MotionTests(unittest.TestCase):
         self.assertEqual(len(payload['categories']), 7)
         self.assertEqual(len(payload['records']), 40)
         self.assertEqual(len({row['id'] for row in payload['records']}), 40)
-        self.assertEqual(sum(row['status'] == 'ready' for row in payload['records']), 12)
+        self.assertEqual(sum(row['status'] == 'ready' for row in payload['records']), 40)
         for row in payload['records']:
             for field in catalog.FIELDS:
                 self.assertTrue(row[field].strip(), (row['id'],field))
@@ -58,19 +58,20 @@ class MotionTests(unittest.TestCase):
             self.assertTrue(all(' - ' in node['_meta']['title'] for node in graph.values()))
         self.assertEqual(videos,{p.name for p in (catalog.LIBRARY/'videos').iterdir()})
 
-    def test_native_video_output_is_lazy_and_bilingual_outputs_are_consistent(self):
+    def test_native_video_output_is_lazy_and_text_follows_selected_language(self):
         try: from comfy_api.latest import InputImpl
         except ImportError: self.skipTest('Native VIDEO requires the ComfyUI Python environment')
-        self.assertEqual(Node.RETURN_TYPES,('STRING','STRING','IMAGE','STRING','STRING','STRING','STRING','VIDEO'))
+        self.assertEqual(Node.RETURN_TYPES,('STRING','IMAGE','STRING','STRING','VIDEO'))
         for row in catalog.catalog()['records']:
             if row['status'] != 'ready':continue
-            result=Node().load_motion(row['id'],'en')
-            self.assertEqual(result[:2],(row['prompt_zh'],row['prompt_en']))
-            self.assertEqual(tuple(result[2].shape),(1,320,576,3))
-            self.assertIsInstance(result[2],torch.Tensor)
-            self.assertEqual(result[3:7],(catalog.description(row,'zh'),catalog.description(row,'en'),row['example_prompt_zh'],row['example_prompt_en']))
-            self.assertIsInstance(result[7],InputImpl.VideoFromFile)
-            self.assertEqual(Node.IS_CHANGED(row['id'],'zh'),Node.IS_CHANGED(row['id'],'en'))
+            for language in ('zh','en'):
+                result=Node().load_motion(row['id'],language)
+                self.assertEqual(result[0],row[f'prompt_{language}'])
+                self.assertEqual(tuple(result[1].shape),(1,320,576,3))
+                self.assertIsInstance(result[1],torch.Tensor)
+                self.assertEqual(result[2:4],(catalog.description(row,language),row[f'example_prompt_{language}']))
+                self.assertIsInstance(result[4],InputImpl.VideoFromFile)
+            self.assertNotEqual(Node.IS_CHANGED(row['id'],'zh'),Node.IS_CHANGED(row['id'],'en'))
 
     def test_unknown_pending_missing_and_symlink_assets_fail_explicitly(self):
         for identifier in ['../pan_right','/etc/passwd','pan_right.mp4','unknown']:
@@ -86,6 +87,11 @@ class MotionTests(unittest.TestCase):
                     path=root/'posters/pan_right.jpg';path.symlink_to(original/'posters/pan_right.jpg')
                     with self.assertRaisesRegex(ValueError,'Unsafe'):catalog.asset('pan_right','poster')
                     with self.assertRaises(ValueError):catalog.asset('pan_right','other')
+                    payload=json.loads((root/'catalog.json').read_text())
+                    payload['records'][0].update(status='pending',video=None,poster=None)
+                    (root/'catalog.json').write_text(json.dumps(payload))
+                    catalog.catalog.cache_clear()
+                    self.assertIn('pending',Node.VALIDATE_INPUTS('pan_right'))
                 finally:catalog.catalog.cache_clear()
 
 class MotionRouteTests(unittest.IsolatedAsyncioTestCase):
@@ -97,10 +103,10 @@ class MotionRouteTests(unittest.IsolatedAsyncioTestCase):
         response=await self.client.get('/cinematic_gallery/motion_catalog')
         data=await response.json()
         self.assertEqual(len(data['records']),40)
-        self.assertEqual(sum(row['available'] for row in data['records']),12)
+        self.assertEqual(sum(row['available'] for row in data['records']),40)
         response=await self.client.get('/cinematic_gallery/motion_assets/video/pan_right',headers={'Range':'bytes=0-127'})
         self.assertEqual(response.status,206)
         self.assertEqual(await response.read(),catalog.asset('pan_right','video').read_bytes()[:128])
-        for path in ['video/handheld','poster/handheld','video/unknown','video/%2e%2e%2fREADME','invalid/pan_right']:
+        for path in ['video/not_a_motion','poster/not_a_motion','video/unknown','video/%2e%2e%2fREADME','invalid/pan_right']:
             response=await self.client.get('/cinematic_gallery/motion_assets/'+path)
             self.assertEqual(response.status,404,path)

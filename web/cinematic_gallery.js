@@ -1,6 +1,6 @@
 import { app } from '../../scripts/app.js';
 import { api } from '../../scripts/api.js';
-import { normalizeLanguage, local, t, validMessage } from './gallery_core.mjs';
+import { normalizeLanguage, local, t, validMessage, migrateMotionOutputs } from './gallery_core.mjs';
 
 const catalogRequests = new Map();
 function getCatalog(kind = 'reference') {
@@ -12,6 +12,9 @@ function getCatalog(kind = 'reference') {
 }
 app.registerExtension({
   name: 'comfyui-cinematic-gallery.browser',
+  loadedGraphNode(node) {
+    if ((node.comfyClass ?? node.type) === 'CinematicMotionGallery') { migrateMotionOutputs(node); node.cinematicRenderLanguage?.(); }
+  },
   async beforeRegisterNodeDef(nodeType, nodeData) {
     if (!['CinematicGallery', 'CinematicMotionGallery'].includes(nodeData.name)) return;
     const isMotion = nodeData.name === 'CinematicMotionGallery';
@@ -42,14 +45,15 @@ app.registerExtension({
         image.alt = name.textContent;
         if (isMotion) image.setAttribute('aria-label', name.textContent);
         if (imageError) status.textContent = `${t(isMotion ? 'missingVideo' : 'missing', language)} (${idWidget.value})`;
-        const labels = language === 'zh' ? ['中文提示词', '英文提示词', '参考图', '中文说明', '英文说明', '完整示例（中文）', '完整示例（英文）', '视频'] : ['Chinese prompt', 'English prompt', 'Reference image', 'Chinese description', 'English description', 'Complete example (Chinese)', 'Complete example (English)', 'Video'];
+        const labels = isMotion ? language === 'zh' ? ['镜头提示词', '封面', '说明', '完整示例', '视频'] : ['Shot prompt', 'Poster', 'Description', 'Complete example', 'Video'] : language === 'zh' ? ['中文提示词', '英文提示词', '参考图', '中文说明', '英文说明'] : ['Chinese prompt', 'English prompt', 'Reference image', 'Chinese description', 'English description'];
         node.outputs?.forEach((output, index) => { output.label = labels[index] ?? output.name; });
-        if (['CinematicGallery', 'Cinematic Gallery', 'Cinematic Gallery 电影参考图库', 'CinematicMotionGallery', 'Cinematic Motion Gallery', 'Cinematic Motion Gallery 电影运镜图库'].includes(node.title)) node.title = isMotion ? language === 'zh' ? 'Cinematic Motion Gallery 电影运镜图库' : 'Cinematic Motion Gallery' : language === 'zh' ? 'Cinematic Gallery 电影参考图库' : 'Cinematic Gallery';
+        if (['CinematicGallery', 'Cinematic Gallery', 'Cinematic Gallery 电影参考图库', 'CinematicMotionGallery', 'Cinematic Motion Gallery', 'Cinematic Motion Gallery 电影运镜图库', '摄影参考', '电影参考', 'Photography Reference', 'Cinematic Reference'].includes(node.title)) node.title = isMotion ? language === 'zh' ? '电影参考' : 'Cinematic Reference' : language === 'zh' ? '摄影参考' : 'Photography Reference';
         if (heading) heading.textContent = t(isMotion ? 'motionTitle' : 'title', language);
         if (done) done.textContent = t('close', language);
         if (frame) frame.title = t(isMotion ? 'motionTitle' : 'title', language);
         node.setDirtyCanvas(true, true);
       }
+      node.cinematicRenderLanguage = renderLanguage;
       async function update() {
         const revision = ++request, id = String(idWidget.value);
         selectedRow = null; imageError = false; image.hidden = false; status.textContent = '';
@@ -119,7 +123,7 @@ app.registerExtension({
       };
       const remove = node.onRemoved;
       node.onRemoved = function () { removed = true; request++; if (isMotion) { image.pause(); image.removeAttribute('src'); image.load(); } close(); remove?.apply(this, arguments); };
-      node.setSize(isMotion ? [410, 560] : [390, 470]); update(); return result;
+      node.setSize([390, 470]); update(); return result;
     };
   },
 });

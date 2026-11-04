@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
-import { filterRecords, randomReference, validMessage, local, t, messages } from '../web/gallery_core.mjs';
+import { filterRecords, randomReference, validMessage, local, t, messages, migrateMotionOutputs } from '../web/gallery_core.mjs';
 const payload = JSON.parse(readFileSync(new URL('../library/catalog.json', import.meta.url)));
 const motionPayload = JSON.parse(readFileSync(new URL('../library/motions/catalog.json', import.meta.url)));
 for (const row of motionPayload.records) row.available = row.status === 'ready';
@@ -28,7 +28,7 @@ test('random selection respects filters and unavailable images, avoiding the cur
 });
 test('translations cover every visible UI string, with a distinct namespace and no external media', () => {
   assert.equal(local(payload.records[0], 'name', 'en'), payload.records[0].name_en);
-  assert.equal(t('title', 'en'), 'Cinematic Gallery');
+  assert.equal(t('title', 'en'), 'Photography Reference Gallery');
   for (const path of ['gallery.html', 'gallery.mjs', 'cinematic_gallery.js', 'gallery.css']) {
     const source = readFileSync(new URL('../web/' + path, import.meta.url), 'utf8');
     assert.doesNotMatch(source.replaceAll('http://www.w3.org/2000/svg', ''), /https?:\/\//);
@@ -53,11 +53,11 @@ async function fixture(type = 'CinematicGallery') {
     pause() {} load() {} removeAttribute(name) { delete this[name]; }
   }
   class Node {
-    constructor() { this.widgets = [{ name: isMotion ? 'motion_id' : 'reference_id', value: isMotion ? 'pan_right' : 'camera_arri' }, { name: 'language', value: 'zh' }]; this.outputs = Array.from({ length: isMotion ? 8 : 5 }, () => ({})); this.title = type; }
+    constructor() { this.widgets = [{ name: isMotion ? 'motion_id' : 'reference_id', value: isMotion ? 'pan_right' : 'camera_arri' }, { name: 'language', value: 'zh' }]; this.outputs = Array.from({ length: 5 }, () => ({})); this.title = type; this.type = type; }
     addDOMWidget(name, type, element, options) { this.box = element; this.options = options; }
     setSize() {} setDirtyCanvas() {}
   }
-  const context = vm.createContext({ normalizeLanguage: value => value === 'en' ? 'en' : 'zh', local, t, validMessage,
+  const context = vm.createContext({ normalizeLanguage: value => value === 'en' ? 'en' : 'zh', local, t, validMessage, migrateMotionOutputs,
     app: { registerExtension: value => { extension = value; }, graph: { change: () => { changes++; } } },
     api: { apiURL: path => '/prefix' + path }, fetch: async url => ({ ok: true, json: async () => url.includes('motion_catalog') ? motionPayload : payload }),
     document: { createElement: tag => new Element(tag), body: { append: element => body.push(element) } },
@@ -80,7 +80,7 @@ test('preview, language and selection restore from serialized inputs without que
   await new Promise(resolve => setImmediate(resolve));
   assert.equal(node.widgets[0].value, 'lighting_rembrandt'); assert.equal(node.widgets[1].value, 'en');
   assert.equal(image.src, '/prefix/cinematic_gallery/assets/lighting_rembrandt');
-  assert.equal(node.title, 'Cinematic Gallery'); assert.equal(fixtureData.changes, 0);
+  assert.equal(node.title, 'Photography Reference'); assert.equal(fixtureData.changes, 0);
   assert.equal(node.options.serialize, false);
 });
 test('only an allowlisted selection from the same-origin active frame changes the node', async () => {
@@ -120,23 +120,57 @@ test('motion search includes aliases, example scenes and uses while random exclu
   assert.equal(filterRecords(motionPayload.records, 'all', 'German automotive')[0].id, 'key_handoff');
   assert.equal(filterRecords(motionPayload.records, 'all', 'plant a clue')[0].id, 'key_handoff');
   const usable = motionPayload.records.filter(row => row.available);
-  assert.equal(usable.length, 12);
+  assert.equal(usable.length, 40);
   for (let index = 0; index < 30; index++) assert.equal(randomReference(motionPayload.records).status, 'ready');
 });
-test('motion nodes restore eight ports, use video previews and reject static or pending selections', async () => {
+test('movie nodes restore five localized ports, use video previews and reject static selections', async () => {
   const f = await fixture('CinematicMotionGallery');
-  assert.equal(f.node.outputs.length, 8);
+  assert.equal(f.node.outputs.length, 5);
   assert.equal(f.node.box.children[1].children[0].tagName, 'video');
   f.node.onConfigure({widgets_values:['truck_right','en']});
   assert.equal(f.node.widgets[0].value, 'truck_right');
   assert.equal(f.node.widgets[1].value, 'en');
-  assert.equal(f.node.title, 'Cinematic Motion Gallery');
+  assert.equal(f.node.title, 'Cinematic Reference');
   assert.equal(f.node.box.children[1].children[0].src, '/prefix/cinematic_gallery/motion_assets/video/truck_right');
   f.open();
   await f.send({type:'cinematic-gallery-select',id:'camera_arri',kind:'reference'});
-  await f.send({type:'cinematic-gallery-select',id:'handheld',kind:'motion'});
   assert.equal(f.node.widgets[0].value, 'truck_right');
   await f.send({type:'cinematic-gallery-select',id:'pan_right',kind:'motion'});
   assert.equal(f.node.widgets[0].value, 'pan_right');
   f.node.onRemoved();
+});
+
+
+test('all requested common shot names resolve to completed references', () => {
+  const names = ['摇镜','移镜','横移','升降镜','环绕镜','变焦推拉','手持抖动','甩镜','主观镜头','无人机航拍','光学变焦','前跟镜','侧跟镜','过肩镜','低角度','高角度','虫眼视角','旋转镜','鸟瞰顶拍','遮挡揭示','穿越镜头','拉焦切换','子弹时间','贴地穿越','螺旋上升','环绕下降','低角揭示','跟随推进','低弧绕行'];
+  for (const name of names) {
+    const rows = filterRecords(motionPayload.records, 'all', name);
+    assert.ok(rows.length > 0, name);
+    assert.ok(rows.some(row => row.status === 'ready'), name);
+  }
+});
+test('legacy bilingual output links migrate to five ports without disconnecting consumers', () => {
+  for (const map of [false, true]) {
+    const links = Array.from({length: 8}, (_,index) => ({id:index + 1,origin_slot:index,origin_id:12,target_id:20+index,target_slot:0}));
+    const node = {outputs:links.map(link=>({links:[link.id]})), graph:{links:map ? new Map(links.map(link=>[link.id,link])) : Object.fromEntries(links.map(link=>[link.id,link]))}};
+    assert.equal(migrateMotionOutputs(node),true);
+    assert.deepEqual(node.outputs.map(output=>output.name), ['prompt','image','description','example_prompt','video']);
+    assert.deepEqual(links.map(link=>link.origin_slot),[0,0,1,2,2,3,3,4]);
+    assert.equal(node.outputs.flatMap(output=>output.links??[]).length,8);
+    assert.equal(migrateMotionOutputs(node),false);
+  }
+});
+
+
+test('loadedGraphNode upgrades old movie nodes and renders only the selected language', async () => {
+  const f = await fixture('CinematicMotionGallery');
+  f.node.widgets[1].callback('en');
+  const links = Array.from({length:8},(_,index)=>({id:index+1,origin_slot:index}));
+  f.node.outputs = links.map(link=>({links:[link.id]}));
+  f.node.graph = {links:Object.fromEntries(links.map(link=>[link.id,link]))};
+  f.extension.loadedGraphNode(f.node);
+  assert.equal(f.node.outputs.length,5);
+  assert.equal(f.node.title,'Cinematic Reference');
+  assert.deepEqual(f.node.outputs.map(output=>output.label),['Shot prompt','Poster','Description','Complete example','Video']);
+  assert.deepEqual(links.map(link=>link.origin_slot),[0,0,1,2,2,3,3,4]);
 });

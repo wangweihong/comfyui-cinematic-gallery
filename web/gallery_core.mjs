@@ -2,8 +2,8 @@ export const DEFAULT_ID = 'camera_arri';
 export const normalizeLanguage = value => value === 'en' ? 'en' : 'zh';
 export const local = (row, field, language) => row[`${field}_${normalizeLanguage(language)}`];
 export const messages = {
-  title: ['电影参考图库', 'Cinematic Gallery'], motionTitle: ['电影运镜图库', 'Cinematic Motion Gallery'],
-  subtitle: ['让每一个画面，都有自己的电影语言。', 'A visual language for every frame.'],
+  title: ['摄影参考图库', 'Photography Reference Gallery'], motionTitle: ['电影参考图库', 'Cinematic Reference Gallery'],
+  subtitle: ['用光线、构图与风格，建立画面表达。', 'Build images with light, composition and style.'], motionSubtitle: ['让每一次镜头运动，都服务于叙事。', 'Make every camera move serve the story.'],
   intro: ['浏览镜头、光线与风格。选中一张参考，将原图及中英文提示词、说明带入 ComfyUI。', 'Explore framing, light and style. Send one reference image, bilingual prompts and descriptions to ComfyUI.'],
   motionIntro: ['探索镜头如何运动。观看真实视频，分别获取通用运镜与完整场景提示词。', 'Explore how cameras move. Watch video examples and get reusable motion prompts and complete scene prompts.'],
   referenceCount: ['张参考图', 'references'], motionCount: ['个镜头条目', 'shot entries'], categoryCount: ['个分类', 'categories'], offline: ['本地素材 · 离线可用', 'Local library · Works offline'],
@@ -15,7 +15,8 @@ export const messages = {
   choose: ['选择此参考', 'Select this reference'], chooseMotion: ['选择此运镜', 'Select this motion'], selected: ['已选择', 'Selected'], close: ['关闭', 'Close'], previous: ['上一张', 'Previous'], next: ['下一张', 'Next'],
   promptZh: ['中文提示词', 'Chinese prompt'], promptEn: ['英文提示词', 'English prompt'], motionPromptZh: ['通用运镜 · 中文', 'Reusable motion · Chinese'], motionPromptEn: ['通用运镜 · 英文', 'Reusable motion · English'],
   exampleZh: ['完整示例 · 中文', 'Complete example · Chinese'], exampleEn: ['完整示例 · 英文', 'Complete example · English'],
-  description: ['参考说明', 'About this reference'], useCases: ['常用场景', 'Use cases'], staticTab: ['静态参考', 'Still references'], motionTab: ['电影运镜', 'Camera movement'],
+  prompt: ['镜头提示词', 'Shot prompt'], example: ['完整示例', 'Complete example'],
+  description: ['参考说明', 'About this reference'], useCases: ['常用场景', 'Use cases'], staticTab: ['摄影参考', 'Photography'], motionTab: ['电影参考', 'Cinematic'],
   pending: ['视频待制作', 'Video in production'], pendingHint: ['此条目已整理提示词，示例视频将在后续补齐。', 'Prompts are available; the example video will be added later.'],
   wrongNode: ['请从对应类型的节点使用', 'Use the matching node type'],
   copy: ['复制', 'Copy'], copied: ['已复制', 'Copied'], copyError: ['复制失败，请手动选择文字。', 'Could not copy. Select the text manually.'],
@@ -23,7 +24,7 @@ export const messages = {
   missingVideo: ['视频加载失败，请检查完整素材。', 'Video could not load. Check the complete library.'],
   footer: ['单选参考 · 双语文本 · 原尺寸图像', 'One reference · Bilingual text · Original image'], motionFooter: ['通用运镜 · 完整示例 · 原生视频', 'Reusable motion · Complete example · Native video'],
   noQueue: ['仅写回选择，不会自动运行工作流。', 'Selection only. Workflows are never queued automatically.'],
-  nodeBrowse: ['浏览电影参考图库', 'Browse cinematic references'], motionBrowse: ['浏览电影运镜图库', 'Browse cinematic motions'], nodeId: ['参考编号', 'Reference ID'], motionId: ['运镜编号', 'Motion ID'], nodeLanguage: ['界面语言', 'UI language'],
+  nodeBrowse: ['浏览摄影参考图库', 'Browse photography references'], motionBrowse: ['浏览电影参考图库', 'Browse cinematic references'], nodeId: ['参考编号', 'Reference ID'], motionId: ['运镜编号', 'Motion ID'], nodeLanguage: ['界面语言', 'UI language'],
 };
 export function t(key, language) { return messages[key]?.[normalizeLanguage(language) === 'en' ? 1 : 0] ?? key; }
 export function filterRecords(records, category = 'all', query = '') {
@@ -41,4 +42,29 @@ export function randomReference(records, currentId, random = Math.random) {
 }
 export function validMessage(event, source, origin) {
   return Boolean(source && event.source === source && event.origin === origin && event.data && typeof event.data === 'object');
+}
+
+// Upgrade the previous eight bilingual output ports without dropping their links.
+export function migrateMotionOutputs(node) {
+  if (node.outputs?.length !== 8) return false;
+  const slots = [0, 0, 1, 2, 2, 3, 3, 4];
+  const names = ['prompt', 'image', 'description', 'example_prompt', 'video'];
+  const types = ['STRING', 'IMAGE', 'STRING', 'STRING', 'VIDEO'];
+  const previous = node.outputs.map(output => ({ output, links: [...(output.links ?? [])] }));
+  const outputs = [0, 2, 3, 5, 7].map((oldSlot, index) => {
+    const output = previous[oldSlot].output;
+    output.name = names[index]; output.type = types[index]; output.links = [];
+    return output;
+  });
+  previous.forEach((saved, oldSlot) => {
+    for (const id of saved.links) {
+      const link = node.graph?.links?.get?.(id) ?? node.graph?.links?.[id];
+      if (link) link.origin_slot = slots[oldSlot];
+      outputs[slots[oldSlot]].links.push(id);
+    }
+  });
+  for (const output of outputs) if (!output.links.length) output.links = null;
+  node.outputs = outputs;
+  node.setDirtyCanvas?.(true, true);
+  return true;
 }

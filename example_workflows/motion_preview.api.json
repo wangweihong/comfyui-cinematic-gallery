@@ -6,7 +6,7 @@
       "language": "zh"
     },
     "_meta": {
-      "title": "CinematicMotionGallery - 选择运镜素材"
+      "title": "电影参考 - 选择镜头示例"
     }
   },
   "2": {
@@ -14,7 +14,7 @@
     "inputs": {
       "images": [
         "1",
-        2
+        1
       ]
     },
     "_meta": {
@@ -26,7 +26,7 @@
     "inputs": {
       "video": [
         "1",
-        7
+        4
       ],
       "filename_prefix": "cinematic_gallery/motion_reference",
       "format": "mp4",

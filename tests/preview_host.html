@@ -7,7 +7,7 @@ function render() { state.textContent = JSON.stringify(Object.fromEntries(Object
 async function create(kind, config) {
  const isMotion=kind==='motion',type=isMotion?'CinematicMotionGallery':'CinematicGallery';
  class FixtureNode {
-  constructor() { this.widgets=[{name:isMotion?'motion_id':'reference_id',value:isMotion?'pan_right':'camera_arri'},{name:'language',value:'zh'}];this.outputs=Array.from({length:isMotion?8:5},()=>({}));this.title=type; }
+  constructor() { this.widgets=[{name:isMotion?'motion_id':'reference_id',value:isMotion?'pan_right':'camera_arri'},{name:'language',value:'zh'}];this.outputs=Array.from({length:5},()=>({}));this.title=type; }
   addDOMWidget(name,type,element) { document.getElementById(kind+'-node').replaceChildren(element); }
   setSize() {} setDirtyCanvas() { render(); }
  }

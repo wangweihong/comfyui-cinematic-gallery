@@ -8,5 +8,7 @@
 ## 运镜内容与生成素材
 
 - 运镜目录依据用户提供的名称与场景整理，新增中英文说明、通用提示词和完整场景示例。概念区分参考 NSW Arts Unit 的 Camera movement 教材及 Adobe 的 Dolly zoom 说明；来源链接保存在 `library/motions/catalog.json`。
-- `library/motions/videos/` 的 12 条视频由本地 ComfyUI H3 Ref2VA INT8 生成；封面取自对应视频。没有复制上述教学来源的图片或视频。
+- `library/motions/videos/` 的 40 条视频由本地 ComfyUI H3 Ref2VA INT8 生成；封面取自对应视频。没有复制上述教学来源的图片或视频。
 - 每项记录实际生成参数、种子、审看说明和 SHA-256，对应 API 工作流位于 `example_workflows/motions/`。
+
+- 虫眼视角素材仅进行了固定 180° 方向归正，未改变向上视角或时间运动；处理命令记录在对应生成元数据中。

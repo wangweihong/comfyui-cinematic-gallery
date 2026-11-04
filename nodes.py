@@ -8,7 +8,7 @@ class CinematicGallery:
     def INPUT_TYPES(cls):
         return {"required": {
             "reference_id": ("STRING", {"default": "camera_arri", "multiline": False,
-                "tooltip": "从电影参考图库选择 / Select a cinematic reference from the gallery"}),
+                "tooltip": "从摄影参考图库选择 / Select a photography reference from the gallery"}),
             "language": (["zh", "en"], {"default": "zh",
                 "tooltip": "界面语言；始终输出中英双语 / UI language; both text languages are always output"}),
         }}
@@ -16,8 +16,8 @@ class CinematicGallery:
     RETURN_TYPES = ("STRING", "STRING", "IMAGE", "STRING", "STRING")
     RETURN_NAMES = ("prompt_zh", "prompt_en", "image", "description_zh", "description_en")
     FUNCTION = "load_reference"
-    CATEGORY = "image/Cinematic Gallery"
-    DESCRIPTION = "单选电影参考图库，返回原图、中英文提示词与说明。Select one reference to output its image, bilingual prompts and descriptions."
+    CATEGORY = "image/Photography Reference"
+    DESCRIPTION = "摄影参考图库，返回原图、中英文提示词与说明。"
 
     @classmethod
     def VALIDATE_INPUTS(cls, reference_id, language="zh"):
@@ -44,16 +44,15 @@ class CinematicMotionGallery:
     def INPUT_TYPES(cls):
         return {"required": {
             "motion_id": ("STRING", {"default": "pan_right", "multiline": False,
-                "tooltip": "从电影运镜图库选择已完成的视频 / Select a completed motion example"}),
+                "tooltip": "从电影参考图库选择镜头示例"}),
             "language": (["zh", "en"], {"default": "zh", "tooltip": "界面语言 / UI language"}),
         }}
 
-    RETURN_TYPES = ("STRING", "STRING", "IMAGE", "STRING", "STRING", "STRING", "STRING", "VIDEO")
-    RETURN_NAMES = ("prompt_zh", "prompt_en", "image", "description_zh", "description_en",
-                    "example_prompt_zh", "example_prompt_en", "video")
+    RETURN_TYPES = ("STRING", "IMAGE", "STRING", "STRING", "VIDEO")
+    RETURN_NAMES = ("prompt", "image", "description", "example_prompt", "video")
     FUNCTION = "load_motion"
-    CATEGORY = "video/Cinematic Gallery"
-    DESCRIPTION = "电影运镜示例：通用提示词、完整示例、封面与原生视频。Motion examples with reusable prompts, scene prompts, a poster and native VIDEO."
+    CATEGORY = "video/Cinematic Reference"
+    DESCRIPTION = "电影参考：镜头提示词、封面、说明、完整示例与视频。文本跟随所选语言。"
 
     @classmethod
     def VALIDATE_INPUTS(cls, motion_id, language="zh"):
@@ -69,11 +68,13 @@ class CinematicMotionGallery:
     @classmethod
     def IS_CHANGED(cls, motion_id, language="zh"):
         from .motion_catalog import fingerprint
-        return fingerprint(motion_id)
+        return fingerprint(motion_id) + ":" + language
 
     def load_motion(self, motion_id, language="zh"):
         from . import motion_catalog
         from comfy_api.latest import InputImpl
+        if language not in ("zh", "en"):
+            raise ValueError("无效的界面语言 / Invalid UI language")
         row = motion_catalog.reference(motion_id)
         _, video_path = motion_catalog.validate_assets(motion_id)
         poster = torch.from_numpy(motion_catalog.poster_array(motion_id))[None, ...]
@@ -82,6 +83,5 @@ class CinematicMotionGallery:
             video.get_dimensions()
         except Exception as exc:
             raise ValueError(f"运镜视频损坏 / Cannot read motion video: {video_path.name}") from exc
-        return (row["prompt_zh"], row["prompt_en"], poster,
-                motion_catalog.description(row, "zh"), motion_catalog.description(row, "en"),
-                row["example_prompt_zh"], row["example_prompt_en"], video)
+        return (row[f"prompt_{language}"], poster, motion_catalog.description(row, language),
+                row[f"example_prompt_{language}"], video)

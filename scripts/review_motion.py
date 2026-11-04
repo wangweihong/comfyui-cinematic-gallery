@@ -43,6 +43,7 @@ def main():
     parser.add_argument('--attempt',type=int,default=1)
     parser.add_argument('--accept',action='store_true')
     parser.add_argument('--notes')
+    parser.add_argument('--rotate180',action='store_true',help='Normalize a fixed upside-down camera orientation')
     args=parser.parse_args()
     catalogfile=ROOT/'library/motions/catalog.json'
     payload=json.loads(catalogfile.read_text())
@@ -56,7 +57,8 @@ def main():
         else:
             assert args.notes and args.notes.strip(),'Record actual visual review notes'
             target=ROOT/'library/motions/videos'/f'{id}.mp4'
-            subprocess.run(['ffmpeg','-v','error','-i',str(path),'-c','copy','-movflags','+faststart','-y',str(target)],check=True)
+            encoding = ['-vf','hflip,vflip','-c:v','libx264','-crf','18','-pix_fmt','yuv420p','-an'] if args.rotate180 else ['-c','copy']
+            subprocess.run(['ffmpeg','-v','error','-i',str(path),*encoding,'-movflags','+faststart','-y',str(target)],check=True)
             poster=ROOT/'library/motions/posters'/f'{id}.jpg'
             subprocess.run(['ffmpeg','-v','error','-ss','1.5','-i',str(target),'-frames:v','1','-q:v','2','-y',str(poster)],check=True)
             graph=json.loads((job/'api.json').read_text())
@@ -64,6 +66,8 @@ def main():
             shutil.copy(job/'api.json',folder/f'{id}.api.json')
             row.update(metadata,status='ready',video=target.name,poster=poster.name)
             row['generation']={'seed':graph['5']['inputs']['noise_seed'],'model':graph['1']['inputs']['unet_name'], 'steps':graph['7']['inputs']['steps'],'sampler':graph['6']['inputs']['sampler_name'],'scheduler':graph['7']['inputs']['scheduler'],'cfg':1,'workflow':f'example_workflows/motions/{id}.api.json','video_sha256':hashlib.sha256(target.read_bytes()).hexdigest(),'review_notes_zh':args.notes}
+            if args.rotate180:
+                row['generation']['postprocess']={'filter':'hflip,vflip','reason':'Normalize fixed camera orientation; upward viewpoint and temporal motion are unchanged','command':'ffmpeg -i INPUT -vf hflip,vflip -c:v libx264 -crf 18 -pix_fmt yuv420p -an -movflags +faststart OUTPUT'}
             row['example_prompt_en']=graph['4']['inputs']['prompt']
         print(id,json.dumps(metadata), 'accepted' if args.accept else 'review sheets prepared')
     if args.accept:catalogfile.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')

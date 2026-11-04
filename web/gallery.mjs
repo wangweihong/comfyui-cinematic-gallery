@@ -26,15 +26,20 @@ function element(tag, className, text) {
 }
 function renderLanguage() {
   document.documentElement.lang = language === 'zh' ? 'zh-CN' : 'en';
-  document.title = `${t(motion() ? 'motionTitle' : 'title', language)} · Cinematic Gallery`;
+  document.title = t(motion() ? 'motionTitle' : 'title', language);
   document.querySelectorAll('[data-text]').forEach(item => { item.textContent = t(item.dataset.text, language); });
   const text = (selector, key) => document.querySelector(selector).textContent = t(key, language);
-  text('h1', motion() ? 'motionTitle' : 'title'); text('.intro', motion() ? 'motionIntro' : 'intro');
+  text('h1', motion() ? 'motionTitle' : 'title'); text('.tagline', motion() ? 'motionSubtitle' : 'subtitle'); text('.intro', motion() ? 'motionIntro' : 'intro');
   text('.stats div:first-child span', motion() ? 'motionCount' : 'referenceCount');
   text('#results-text', motion() ? 'motionResults' : 'results'); text('.footer>span:first-child', motion() ? 'motionFooter' : 'footer');
   text('#copy-zh', 'copy'); text('#copy-en', 'copy');
-  $('copy-zh').previousElementSibling.textContent = t(motion() ? 'motionPromptZh' : 'promptZh', language);
-  $('copy-en').previousElementSibling.textContent = t(motion() ? 'motionPromptEn' : 'promptEn', language);
+  $('copy-zh').previousElementSibling.textContent = t(motion() ? 'prompt' : 'promptZh', language);
+  $('copy-en').previousElementSibling.textContent = t('promptEn', language);
+  $('copy-en').closest('.prompt-box').hidden = motion();
+  $('copy-example-zh').previousElementSibling.textContent = t('example', language);
+  document.querySelector('.brand strong').textContent = language === 'zh' ? motion() ? '电影参考' : '摄影参考' : motion() ? 'CINEMATIC' : 'PHOTOGRAPHY';
+  document.querySelector('.brand small').textContent = language === 'zh' ? motion() ? '镜头与运镜' : '光线 · 构图 · 风格' : 'REFERENCE GALLERY';
+  document.querySelector('.hero .eyebrow').textContent = language === 'zh' ? motion() ? '镜头语言' : '摄影语言' : motion() ? 'THE ART OF MOVEMENT' : 'THE ART OF SEEING';
   $('download').textContent = t(motion() ? 'downloadVideo' : 'download', language);
   $('use').textContent = t(targetKind && targetKind !== kind ? 'wrongNode' : motion() ? embedded ? 'useMotion' : 'chooseMotion' : embedded ? 'use' : 'choose', language);
   document.querySelectorAll('[data-placeholder]').forEach(item => { item.placeholder = t(item.dataset.placeholder, language); item.setAttribute('aria-label', item.placeholder); });
@@ -84,7 +89,13 @@ function renderGrid() {
     stage.append(element('span', 'card-badge', local(group, 'name', language)));
     if (row.id === state().selectedId) stage.append(element('span', 'selected-badge', `✓ ${t('selected', language)}`));
     const info = element('div', 'card-info');
-    info.append(element('h2', '', local(row, 'name', language)), element('p', 'other-name', local(row, 'name', language === 'zh' ? 'en' : 'zh')), element('p', 'card-description', local(row, 'description', language)));
+    info.append(element('h2', '', local(row, 'name', language)));
+    if (motion() && language === 'zh') {
+      const aliases = (row.aliases ?? []).filter(alias => alias.length <= 7 && !row.name_zh.includes(alias)).slice(0, 2);
+      if (aliases.length) info.append(element('p', 'alias-tags', aliases.join(' · ')));
+    }
+    if (!motion()) info.append(element('p', 'other-name', local(row, 'name', language === 'zh' ? 'en' : 'zh')));
+    info.append(element('p', 'card-description', local(row, 'description', language)));
     const bottom = element('div', 'card-bottom'); bottom.append(element('code', '', row.id), element('span', '', `${t(motion() ? 'viewMotion' : 'view', language)} ↗`));
     info.append(bottom); card.append(stage, info); card.onclick = () => openReference(row.id); return card;
   }));
@@ -95,9 +106,10 @@ function renderViewer(loadMedia = true) {
   const pending = motion() && row.status !== 'ready';
   const group = payload.categories.find(item => item.id === row.category);
   $('viewer-category').textContent = local(group, 'name', language); $('viewer-title').textContent = local(row, 'name', language);
-  $('viewer-other-name').textContent = local(row, 'name', language === 'zh' ? 'en' : 'zh'); $('viewer-id').textContent = row.id;
-  $('prompt-zh').textContent = row.prompt_zh; $('prompt-en').textContent = row.prompt_en; $('description').textContent = local(row, 'description', language);
-  for (const lang of ['zh', 'en']) { $('example-' + lang + '-box').hidden = !motion(); $('example-' + lang).textContent = row['example_prompt_' + lang] ?? ''; }
+  $('viewer-other-name').textContent = local(row, 'name', language === 'zh' ? 'en' : 'zh'); $('viewer-id').textContent = row.id; $('viewer-other-name').hidden = motion();
+  $('prompt-zh').textContent = motion() ? local(row, 'prompt', language) : row.prompt_zh; $('prompt-zh').lang = motion() ? language === 'zh' ? 'zh-CN' : 'en' : 'zh-CN'; $('prompt-en').textContent = row.prompt_en; $('description').textContent = local(row, 'description', language);
+  $('example-zh-box').hidden = !motion(); $('example-en-box').hidden = true;
+  $('example-zh').textContent = motion() ? local(row, 'example_prompt', language) : ''; $('example-zh').lang = language === 'zh' ? 'zh-CN' : 'en';
   $('use-cases-box').hidden = !motion(); $('use-cases').textContent = motion() ? local(row, 'use_cases', language) : '';
   $('download').href = motion() ? videoURL(row.id) : imageURL(row.id); $('download').download = (motion() ? row.video : row.image) ?? '';
   $('viewer-image').alt = local(row, 'name', language); video.setAttribute('aria-label', local(row, 'name', language)); $('copy-status').textContent = '';
@@ -182,7 +194,7 @@ $('use').onclick = () => {
 };
 for (const lang of ['zh', 'en']) for (const example of [false, true]) $(example ? `copy-example-${lang}` : `copy-${lang}`).onclick = async () => {
   const row = getRecord(activeId); if (!row) return;
-  try { await navigator.clipboard.writeText(row[`${example ? 'example_prompt' : 'prompt'}_${lang}`]); $('copy-status').textContent = t('copied', language); }
+  try { await navigator.clipboard.writeText(row[`${example ? 'example_prompt' : 'prompt'}_${motion() ? language : lang}`]); $('copy-status').textContent = t('copied', language); }
   catch { $('copy-status').textContent = t('copyError', language); }
 };
 document.addEventListener('keydown', event => {
