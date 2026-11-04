@@ -6,6 +6,14 @@ ComfyUI 摄影参考与电影参考插件。**110 张摄影参考图、114 条�
 
 ## 安装与使用
 
+在 `ComfyUI/custom_nodes/` 目录运行：
+
+```bash
+git clone https://github.com/wangweihong/comfyui-cinematic-gallery.git
+```
+
+也可下载本仓库的完整 ZIP，解压为 `comfyui-cinematic-gallery` 文件夹后安装。
+
 1. 将完整的 `comfyui-cinematic-gallery` 文件夹复制到 `ComfyUI/custom_nodes/`，保留 `library/` 和 `web/`。
 2. 重启 ComfyUI，并刷新浏览器。依赖为 ComfyUI 已使用的 Pillow、NumPy、PyTorch 和 aiohttp；不需要模型下载或额外的前端构建。
 3. 添加 **image → Photography Reference → 摄影参考**。

@@ -5,6 +5,9 @@ description = "Offline cinematic reference gallery with bilingual prompts and de
 requires-python = ">=3.10"
 dependencies = ["Pillow", "numpy", "torch", "aiohttp"]
 
+[project.urls]
+Repository = "https://github.com/wangweihong/comfyui-cinematic-gallery"
+
 [tool.comfy]
 PublisherId = ""
 DisplayName = "摄影参考与电影参考"
