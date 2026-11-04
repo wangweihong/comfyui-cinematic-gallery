@@ -1,0 +1,14 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Cinematic node integration fixture</title></head>
+<body style="font:14px sans-serif;background:#eef0f4;padding:20px"><h1>ComfyUI extension test fixture</h1><p>Tests the real frontend extension with a minimal node host; no inference or queue.</p><button id="save">Save workflow inputs</button> <button id="restore">Restore saved inputs</button><pre id="state"></pre><div id="node" style="width:370px;height:280px"></div><script type="module">
+import '/extensions/cinematic_gallery/cinematic_gallery.js';
+const state = document.getElementById('state');
+class FixtureNode {
+  constructor() { this.widgets = [{name:'reference_id',value:'camera_arri'},{name:'language',value:'zh'}]; this.outputs = Array.from({length:5},()=>({})); this.title = 'CinematicGallery'; }
+  addDOMWidget(name,type,element) { document.getElementById('node').replaceChildren(element); }
+  setSize() {} setDirtyCanvas() { state.textContent = JSON.stringify({inputs:this.widgets.map(w=>w.value),outputs:this.outputs.map(o=>o.label)},null,2); }
+}
+await window.fixtureExtension.beforeRegisterNodeDef(FixtureNode,{name:'CinematicGallery'});
+let node = new FixtureNode(); node.onNodeCreated(); let saved;
+document.getElementById('save').onclick=()=>{saved={widgets_values:node.widgets.map(w=>w.value)};};
+document.getElementById('restore').onclick=()=>{if(!saved)return;node.onRemoved();node=new FixtureNode();node.onNodeCreated();node.onConfigure(saved);};
+</script></body></html>

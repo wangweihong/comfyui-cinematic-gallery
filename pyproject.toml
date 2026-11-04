@@ -1,0 +1,11 @@
+[project]
+name = "comfyui-cinematic-gallery"
+version = "0.1.0"
+description = "Offline cinematic reference gallery with bilingual prompts and descriptions for ComfyUI"
+requires-python = ">=3.10"
+dependencies = ["Pillow", "numpy", "torch", "aiohttp"]
+
+[tool.comfy]
+PublisherId = ""
+DisplayName = "Cinematic Gallery 电影参考图库"
+Icon = ""
