@@ -1,0 +1,742 @@
+[
+  {
+    "id": "style_halftone_pop",
+    "frames": 124,
+    "sha256": "95d604ad41e39e345f511b91e78b4841fd4ac5bc076522737c11afb285e88567",
+    "adjacent_change_mean": 8.7015,
+    "adjacent_change_p90": 10.5989,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 93.5325,
+    "review_sheet": ".generation/styles/review/style_halftone_pop-all.jpg"
+  },
+  {
+    "id": "style_vintage_comics",
+    "frames": 124,
+    "sha256": "8e0469c0029d5a508a144b4a81a5965064e1785f33bf3551d57e1bc5ff633cfb",
+    "adjacent_change_mean": 7.5936,
+    "adjacent_change_p90": 14.5104,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 56.6041,
+    "review_sheet": ".generation/styles/review/style_vintage_comics-all.jpg"
+  },
+  {
+    "id": "style_motion_comic",
+    "frames": 124,
+    "sha256": "16d180f97b2595b1d6afbf0504ccf6e229abd15d1ce602155fae19ec848cdc72",
+    "adjacent_change_mean": 8.6183,
+    "adjacent_change_p90": 17.3212,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 29.5521,
+    "review_sheet": ".generation/styles/review/style_motion_comic-all.jpg"
+  },
+  {
+    "id": "style_comic_hybrid_3d",
+    "frames": 124,
+    "sha256": "84b05e485a2d9d7bb9f3cab3ad2a87daee27a66d122f1adb064ea7d5ef9c5a4f",
+    "adjacent_change_mean": 7.4244,
+    "adjacent_change_p90": 15.212,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 54.0763,
+    "review_sheet": ".generation/styles/review/style_comic_hybrid_3d-all.jpg"
+  },
+  {
+    "id": "style_risograph",
+    "frames": 124,
+    "sha256": "9cd303bdc8c924090731455663c1f99a3b8179edf274f174911cde32211b3f19",
+    "adjacent_change_mean": 6.339,
+    "adjacent_change_p90": 12.2865,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 79.0698,
+    "review_sheet": ".generation/styles/review/style_risograph-all.jpg"
+  },
+  {
+    "id": "style_screen_print",
+    "frames": 124,
+    "sha256": "fe5478415e01f6a82a93154cc98f3fba361aa6a7349c458bd3cccf2a47035d1e",
+    "adjacent_change_mean": 8.7346,
+    "adjacent_change_p90": 16.8339,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 68.704,
+    "review_sheet": ".generation/styles/review/style_screen_print-all.jpg"
+  },
+  {
+    "id": "style_etching",
+    "frames": 124,
+    "sha256": "f024f08b68cb131d7bd170cd274c0e0d4d0526774d4cb7f84a071045d493d0d5",
+    "adjacent_change_mean": 7.5953,
+    "adjacent_change_p90": 15.4869,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 19.7297,
+    "review_sheet": ".generation/styles/review/style_etching-all.jpg"
+  },
+  {
+    "id": "style_monochrome_novel",
+    "frames": 124,
+    "sha256": "ba53967b1e853bc7ce2256b4d61d3c423a9760992474b9711b4caf01e5b7b1a4",
+    "adjacent_change_mean": 9.9441,
+    "adjacent_change_p90": 20.506,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 11.8911,
+    "review_sheet": ".generation/styles/review/style_monochrome_novel-all.jpg"
+  },
+  {
+    "id": "style_franco_belgian",
+    "frames": 124,
+    "sha256": "3a0c2822718de7dec008e170b7b270407440e2f9fc68bdc04b3cece4c99ca7de",
+    "adjacent_change_mean": 7.3319,
+    "adjacent_change_p90": 13.7175,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 36.2086,
+    "review_sheet": ".generation/styles/review/style_franco_belgian-all.jpg"
+  },
+  {
+    "id": "style_manga_screentone",
+    "frames": 124,
+    "sha256": "7cb05341d4f2d54d21a87cf7ca168f4ebc2d368682c315b029ce01a5d5a687ed",
+    "adjacent_change_mean": 8.8613,
+    "adjacent_change_p90": 11.5141,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 1.9979,
+    "review_sheet": ".generation/styles/review/style_manga_screentone-all.jpg"
+  },
+  {
+    "id": "style_editorial_collage",
+    "frames": 124,
+    "sha256": "ffc6392568e8d32ed82a4539d4f56d8945e98b07282cac0607635eb96effa74b",
+    "adjacent_change_mean": 7.4074,
+    "adjacent_change_p90": 14.1323,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 31.275,
+    "review_sheet": ".generation/styles/review/style_editorial_collage-all.jpg"
+  },
+  {
+    "id": "style_constructivist",
+    "frames": 124,
+    "sha256": "aed3913fe9dbafa80790525887dd49383615852682d12f03702ca54f32249d5b",
+    "adjacent_change_mean": 5.5063,
+    "adjacent_change_p90": 10.2191,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 40.0112,
+    "review_sheet": ".generation/styles/review/style_constructivist-all.jpg"
+  },
+  {
+    "id": "style_arcade_low_poly",
+    "frames": 124,
+    "sha256": "e735989bd9691c02e9a768993b02a90cc4c2d4f420778313d66ae3adee540c8f",
+    "adjacent_change_mean": 5.4153,
+    "adjacent_change_p90": 6.5682,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 74.816,
+    "review_sheet": ".generation/styles/review/style_arcade_low_poly-all.jpg"
+  },
+  {
+    "id": "style_ps1",
+    "frames": 124,
+    "sha256": "6a4ccce72b90ae0fae5576a09260d0c034e5f4650a9bcabbe5a76195e895c74a",
+    "adjacent_change_mean": 4.0477,
+    "adjacent_change_p90": 4.9921,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 16.6672,
+    "review_sheet": ".generation/styles/review/style_ps1-all.jpg"
+  },
+  {
+    "id": "style_ps2",
+    "frames": 124,
+    "sha256": "78f5075d6062df52fe74a23f8bf9af76ad4a25abe5732aabf9f5dd044962d030",
+    "adjacent_change_mean": 5.3438,
+    "adjacent_change_p90": 7.2235,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 19.6686,
+    "review_sheet": ".generation/styles/review/style_ps2-all.jpg"
+  },
+  {
+    "id": "style_voxel",
+    "frames": 124,
+    "sha256": "10fca8b60d21dcde3f423a9bfc875d3b61df617dd93f5b0003eacd41c33bf136",
+    "adjacent_change_mean": 8.038,
+    "adjacent_change_p90": 8.858,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 39.6626,
+    "review_sheet": ".generation/styles/review/style_voxel-all.jpg"
+  },
+  {
+    "id": "style_isometric_low_poly",
+    "frames": 124,
+    "sha256": "8e288e7ffe4aa6c604f6d992cef0685569726f35470efff7d56cfa7fef53c2a2",
+    "adjacent_change_mean": 4.8853,
+    "adjacent_change_p90": 5.8681,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 34.3706,
+    "review_sheet": ".generation/styles/review/style_isometric_low_poly-all.jpg"
+  },
+  {
+    "id": "style_cel_shaded",
+    "frames": 124,
+    "sha256": "a890201d18257fc52f8a864e20c754d4ec1633809f29ea169facb3048ec57954",
+    "adjacent_change_mean": 5.8594,
+    "adjacent_change_p90": 7.5705,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 25.735,
+    "review_sheet": ".generation/styles/review/style_cel_shaded-all.jpg"
+  },
+  {
+    "id": "style_pixel_16bit",
+    "frames": 124,
+    "sha256": "3baf77c899d74b353f04165a7f03ef569ab0d8c35c3daf5f316d5f3ae6f23c42",
+    "adjacent_change_mean": 7.2242,
+    "adjacent_change_p90": 8.4253,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 34.0592,
+    "review_sheet": ".generation/styles/review/style_pixel_16bit-all.jpg"
+  },
+  {
+    "id": "style_pixel_8bit",
+    "frames": 124,
+    "sha256": "16adb465d9ebd071440072b99d99afb37ec8b0c8e6dccfec5aee89418fbf659b",
+    "adjacent_change_mean": 6.3264,
+    "adjacent_change_p90": 7.6989,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 30.0951,
+    "review_sheet": ".generation/styles/review/style_pixel_8bit-all.jpg"
+  },
+  {
+    "id": "style_one_bit",
+    "frames": 124,
+    "sha256": "e09dbd834515c8d44b9caf6a5d86f4e04b1f20a5eb2ccf636ed77999e650cd19",
+    "adjacent_change_mean": 17.4625,
+    "adjacent_change_p90": 21.6139,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 1.7296,
+    "review_sheet": ".generation/styles/review/style_one_bit-all.jpg"
+  },
+  {
+    "id": "style_early_cgi",
+    "frames": 124,
+    "sha256": "b5f45f0610be73c07a11e05663c53b86f251d099ca29161be71b5cd4d22794c3",
+    "adjacent_change_mean": 8.3744,
+    "adjacent_change_p90": 9.1722,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 56.9925,
+    "review_sheet": ".generation/styles/review/style_early_cgi-all.jpg"
+  },
+  {
+    "id": "style_y2k",
+    "frames": 124,
+    "sha256": "d6be9aa4e4d84787087d779de3ce4eda3e21341fc219b897939349d9dff9c7e0",
+    "adjacent_change_mean": 8.2126,
+    "adjacent_change_p90": 9.3266,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 32.5633,
+    "review_sheet": ".generation/styles/review/style_y2k-all.jpg"
+  },
+  {
+    "id": "style_synthwave_low_poly",
+    "frames": 124,
+    "sha256": "500cd2e0601aa04e3553136b3210a24a9a1deda7f328e7f403da29d99bd756f9",
+    "adjacent_change_mean": 5.4956,
+    "adjacent_change_p90": 6.2697,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 77.6442,
+    "review_sheet": ".generation/styles/review/style_synthwave_low_poly-all.jpg"
+  },
+  {
+    "id": "style_fluorescent_cutout",
+    "frames": 124,
+    "sha256": "3d4bc04b78e22fce7bf7538c851a3841a5cbac727014631518c2974ea3fadcd4",
+    "adjacent_change_mean": 5.7196,
+    "adjacent_change_p90": 11.5193,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 77.6311,
+    "review_sheet": ".generation/styles/review/style_fluorescent_cutout-all.jpg"
+  },
+  {
+    "id": "style_neon_paper_sculpture",
+    "frames": 124,
+    "sha256": "d2105c915f00aa6829cd3746dc4e7f119b790b10e180d4ec2125c006526f30bf",
+    "adjacent_change_mean": 8.7311,
+    "adjacent_change_p90": 9.6718,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 64.328,
+    "review_sheet": ".generation/styles/review/style_neon_paper_sculpture-all.jpg"
+  },
+  {
+    "id": "style_layered_paper",
+    "frames": 124,
+    "sha256": "30cab8a6a9952871d39a6061f69ce2068831ce8c673474ac1999511b3284f0c1",
+    "adjacent_change_mean": 6.4931,
+    "adjacent_change_p90": 12.3304,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 46.1999,
+    "review_sheet": ".generation/styles/review/style_layered_paper-all.jpg"
+  },
+  {
+    "id": "style_paper_shadow_box",
+    "frames": 124,
+    "sha256": "0336f6666135269fd2e2dedb98a9f3e8d7bb69d16cb415b8c8dd1c9ed888401e",
+    "adjacent_change_mean": 7.696,
+    "adjacent_change_p90": 15.9507,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 35.0201,
+    "review_sheet": ".generation/styles/review/style_paper_shadow_box-all.jpg"
+  },
+  {
+    "id": "style_magazine_collage",
+    "frames": 124,
+    "sha256": "5eb53cfc7bad15997f75ce2cf2adc85016fc1eb6246a263359ee8e85d8bcf073",
+    "adjacent_change_mean": 7.1545,
+    "adjacent_change_p90": 13.6125,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 23.4978,
+    "review_sheet": ".generation/styles/review/style_magazine_collage-all.jpg"
+  },
+  {
+    "id": "style_mixed_collage",
+    "frames": 124,
+    "sha256": "cf83344055d9da4f5a40eb1882de5540e41b49323812f41ecf7277fcfabfb607",
+    "adjacent_change_mean": 5.9604,
+    "adjacent_change_p90": 11.3531,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 27.1994,
+    "review_sheet": ".generation/styles/review/style_mixed_collage-all.jpg"
+  },
+  {
+    "id": "style_uv_blacklight",
+    "frames": 124,
+    "sha256": "c0094967dfda8a28d15f3179d2bdd7051fb43cbde711b57101e2fb50ef17ff4b",
+    "adjacent_change_mean": 4.3474,
+    "adjacent_change_p90": 4.7998,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 45.6777,
+    "review_sheet": ".generation/styles/review/style_uv_blacklight-all.jpg"
+  },
+  {
+    "id": "style_claymation",
+    "frames": 124,
+    "sha256": "331612d2234bedac2966b433a8cd51031050e9a9fe328f9f4b5ce2f2e4455568",
+    "adjacent_change_mean": 5.6666,
+    "adjacent_change_p90": 10.7531,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 44.8017,
+    "review_sheet": ".generation/styles/review/style_claymation-all.jpg"
+  },
+  {
+    "id": "style_felt",
+    "frames": 124,
+    "sha256": "dd937aa89415c9889304c3ac84467d08fb83d57adc7dd0693ea98e6bc7b5fe40",
+    "adjacent_change_mean": 5.8215,
+    "adjacent_change_p90": 11.3906,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 46.0332,
+    "review_sheet": ".generation/styles/review/style_felt-all.jpg"
+  },
+  {
+    "id": "style_knitted",
+    "frames": 124,
+    "sha256": "46044abdf29226ed4f8c6147a874565c8a6c92f9ce9830d1f3729e9efda206a6",
+    "adjacent_change_mean": 6.9108,
+    "adjacent_change_p90": 13.4421,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 39.8546,
+    "review_sheet": ".generation/styles/review/style_knitted-all.jpg"
+  },
+  {
+    "id": "style_puppet",
+    "frames": 124,
+    "sha256": "374c9da53bbf8e300b99a1cd3771f6cd35a740c87b419c148d7f205dc6f27e50",
+    "adjacent_change_mean": 6.1175,
+    "adjacent_change_p90": 11.3482,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 35.9004,
+    "review_sheet": ".generation/styles/review/style_puppet-all.jpg"
+  },
+  {
+    "id": "style_miniature_diorama",
+    "frames": 124,
+    "sha256": "3696636fd28237355b57c1125485dd302baf95ceb6791f6ddcb0cb5d1eb09f66",
+    "adjacent_change_mean": 5.7902,
+    "adjacent_change_p90": 11.1942,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 25.2925,
+    "review_sheet": ".generation/styles/review/style_miniature_diorama-all.jpg"
+  },
+  {
+    "id": "style_shadow_puppet",
+    "frames": 124,
+    "sha256": "f3d94ecea7ba5ec5a23bfc3db44912ba00008fff8a00b4275267f780db76e584",
+    "adjacent_change_mean": 9.6487,
+    "adjacent_change_p90": 20.5882,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 28.3401,
+    "review_sheet": ".generation/styles/review/style_shadow_puppet-all.jpg"
+  },
+  {
+    "id": "style_sticker_collage",
+    "frames": 124,
+    "sha256": "ea2103c98951d3c8b43874070c50018e09d6dd60978f2e2416a031ffa4f7e1b8",
+    "adjacent_change_mean": 8.199,
+    "adjacent_change_p90": 15.7645,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 29.7051,
+    "review_sheet": ".generation/styles/review/style_sticker_collage-all.jpg"
+  },
+  {
+    "id": "style_ink_wash",
+    "frames": 124,
+    "sha256": "cd23996f7fc465fc7e3be222ee9c96f9ee6e122816f1472a1376aa81bfd4f6d6",
+    "adjacent_change_mean": 8.5199,
+    "adjacent_change_p90": 9.2325,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 22.6614,
+    "review_sheet": ".generation/styles/review/style_ink_wash-all.jpg"
+  },
+  {
+    "id": "style_gongbi",
+    "frames": 124,
+    "sha256": "5f14d0f42eee6685115974b432e01094024cd7fcd522f6d4cff59aabd2cee4fc",
+    "adjacent_change_mean": 5.3636,
+    "adjacent_change_p90": 6.159,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 44.3083,
+    "review_sheet": ".generation/styles/review/style_gongbi-all.jpg"
+  },
+  {
+    "id": "style_ukiyo_e",
+    "frames": 124,
+    "sha256": "7361a988723dfb7da117734ce09d1a8ee3513c20168190b3337ca1232b4742c7",
+    "adjacent_change_mean": 5.7377,
+    "adjacent_change_p90": 10.4519,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 42.0547,
+    "review_sheet": ".generation/styles/review/style_ukiyo_e-all.jpg"
+  },
+  {
+    "id": "style_impressionist",
+    "frames": 124,
+    "sha256": "fd31432586784ac15579319659e5a1da5f606b0135bf7e1ee708d2970ddf6f00",
+    "adjacent_change_mean": 5.5771,
+    "adjacent_change_p90": 10.7721,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 39.7738,
+    "review_sheet": ".generation/styles/review/style_impressionist-all.jpg"
+  },
+  {
+    "id": "style_impasto",
+    "frames": 124,
+    "sha256": "df09388d235f2fced674db98c37db00d0b58b92285f6f729732cb688b5524b83",
+    "adjacent_change_mean": 6.542,
+    "adjacent_change_p90": 12.9667,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 38.0845,
+    "review_sheet": ".generation/styles/review/style_impasto-all.jpg"
+  },
+  {
+    "id": "style_watercolor",
+    "frames": 124,
+    "sha256": "1a3615c3f6eb5a41b2d79cde7688a7fd14e4a78b9f244466a5ad43c7e6ddbc4b",
+    "adjacent_change_mean": 5.1732,
+    "adjacent_change_p90": 9.9688,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 31.8797,
+    "review_sheet": ".generation/styles/review/style_watercolor-all.jpg"
+  },
+  {
+    "id": "style_colored_pencil",
+    "frames": 124,
+    "sha256": "c0c71d6c556cd7f1f3c84e0b90d36b4c3e9ca0342a4deb8d1b9b6d30a39a63f7",
+    "adjacent_change_mean": 5.674,
+    "adjacent_change_p90": 10.5677,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 33.303,
+    "review_sheet": ".generation/styles/review/style_colored_pencil-all.jpg"
+  },
+  {
+    "id": "style_charcoal",
+    "frames": 124,
+    "sha256": "cc890e6f57eb1e14b9212cb3d838bcd327f0b0a1fe64eaba669f98084fae0e2c",
+    "adjacent_change_mean": 8.4088,
+    "adjacent_change_p90": 18.3276,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 13.7682,
+    "review_sheet": ".generation/styles/review/style_charcoal-all.jpg"
+  },
+  {
+    "id": "style_pastel_crayon",
+    "frames": 124,
+    "sha256": "3a755974551b33b3fe8027733ad4690cfb2747ce2ea4e4705c1fd98e01e7ea20",
+    "adjacent_change_mean": 5.2299,
+    "adjacent_change_p90": 9.6861,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 38.8674,
+    "review_sheet": ".generation/styles/review/style_pastel_crayon-all.jpg"
+  },
+  {
+    "id": "style_fauvist",
+    "frames": 124,
+    "sha256": "ee49d6eeb78837082ee1907bd26d30f73c5268ad132cec3bf4343044a36025a7",
+    "adjacent_change_mean": 6.328,
+    "adjacent_change_p90": 12.2876,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 98.1072,
+    "review_sheet": ".generation/styles/review/style_fauvist-all.jpg"
+  },
+  {
+    "id": "style_expressionist",
+    "frames": 124,
+    "sha256": "05dae50f7d1f03f3a0c7017429824ecf3737c2287d7b845b25828ed98c5c0ec6",
+    "adjacent_change_mean": 7.475,
+    "adjacent_change_p90": 14.526,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 40.5223,
+    "review_sheet": ".generation/styles/review/style_expressionist-all.jpg"
+  },
+  {
+    "id": "style_cubist",
+    "frames": 124,
+    "sha256": "8a2b7e258a87b0112ff09ff158440a08259b3eea626ba6cb447d768a3aeca636",
+    "adjacent_change_mean": 6.748,
+    "adjacent_change_p90": 13.5796,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 38.4192,
+    "review_sheet": ".generation/styles/review/style_cubist-all.jpg"
+  },
+  {
+    "id": "style_art_nouveau",
+    "frames": 124,
+    "sha256": "3dd6b1d26658d2c694930dc612532931abff3bdd9e1999bed4f17f552ca7844a",
+    "adjacent_change_mean": 7.2916,
+    "adjacent_change_p90": 13.2173,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 59.6327,
+    "review_sheet": ".generation/styles/review/style_art_nouveau-all.jpg"
+  },
+  {
+    "id": "style_rotoscope",
+    "frames": 124,
+    "sha256": "35165b6bc8f060dd726c7b7b39962657e45890240556966a27d1b1b0e2448990",
+    "adjacent_change_mean": 5.3336,
+    "adjacent_change_p90": 9.9682,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 28.6849,
+    "review_sheet": ".generation/styles/review/style_rotoscope-all.jpg"
+  },
+  {
+    "id": "style_cyberpunk",
+    "frames": 124,
+    "sha256": "625bd29bfcb447389df4d40e7d2c90d48b8888b9c907665a05ef64ffc9ee20e3",
+    "adjacent_change_mean": 4.314,
+    "adjacent_change_p90": 4.8091,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 27.7512,
+    "review_sheet": ".generation/styles/review/style_cyberpunk-all.jpg"
+  },
+  {
+    "id": "style_vaporwave",
+    "frames": 124,
+    "sha256": "b3d3ebf6c0d477a86216912dd09917ec922097ce80b49ed3cb674ca8f462ca69",
+    "adjacent_change_mean": 6.7128,
+    "adjacent_change_p90": 8.1963,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 31.2554,
+    "review_sheet": ".generation/styles/review/style_vaporwave-all.jpg"
+  },
+  {
+    "id": "style_synthwave",
+    "frames": 124,
+    "sha256": "da3a5e87ab8dc3be26afb1c0201950fc4848811a4d22f1fef81e2a0442cf81c4",
+    "adjacent_change_mean": 5.6115,
+    "adjacent_change_p90": 6.6761,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 43.92,
+    "review_sheet": ".generation/styles/review/style_synthwave-all.jpg"
+  },
+  {
+    "id": "style_psychedelic",
+    "frames": 124,
+    "sha256": "b02674a2fe136a2e2ab9d71d2fb4e2ec5fe2d3d823550de2f5013148de0170d5",
+    "adjacent_change_mean": 11.7791,
+    "adjacent_change_p90": 12.6285,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 65.3538,
+    "review_sheet": ".generation/styles/review/style_psychedelic-all.jpg"
+  },
+  {
+    "id": "style_acid_graphics",
+    "frames": 124,
+    "sha256": "a7da02c23c2fe8e22c73f814e9671aebf87a5caad48f2f0037f8d84ede2b64c8",
+    "adjacent_change_mean": 5.0542,
+    "adjacent_change_p90": 6.3251,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 28.8776,
+    "review_sheet": ".generation/styles/review/style_acid_graphics-all.jpg"
+  },
+  {
+    "id": "style_glitch",
+    "frames": 124,
+    "sha256": "32d10c6ac6ed130f13e040b464af5a0160730545c74ccecff21ee02d05541024",
+    "adjacent_change_mean": 6.6195,
+    "adjacent_change_p90": 9.8156,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 21.4052,
+    "review_sheet": ".generation/styles/review/style_glitch-all.jpg"
+  },
+  {
+    "id": "style_datamosh",
+    "frames": 124,
+    "sha256": "f155c110874aa9fdb8bf6ff4a4cdb727d2dda48759956be8a835fb24503d9256",
+    "adjacent_change_mean": 5.5691,
+    "adjacent_change_p90": 6.0768,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 21.6344,
+    "review_sheet": ".generation/styles/review/style_datamosh-all.jpg"
+  },
+  {
+    "id": "style_dreamcore",
+    "frames": 124,
+    "sha256": "dc7a8340d34a6a76898cb28cbe45789cafa0a2c54b69364804632b960a847ce5",
+    "adjacent_change_mean": 5.2647,
+    "adjacent_change_p90": 7.2101,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 25.5671,
+    "review_sheet": ".generation/styles/review/style_dreamcore-all.jpg"
+  },
+  {
+    "id": "style_weirdcore",
+    "frames": 124,
+    "sha256": "c5437a421c60af61d6e7ce1eb7ee9138acb05db09b3256ec0c496c9d8b9a11cf",
+    "adjacent_change_mean": 4.5888,
+    "adjacent_change_p90": 4.8319,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 12.2134,
+    "review_sheet": ".generation/styles/review/style_weirdcore-all.jpg"
+  },
+  {
+    "id": "style_liquid_metal",
+    "frames": 124,
+    "sha256": "4c9e81dd3ecb2466e07b6d2aa0df35e35c41d31169ff69954f3b2c6d05136728",
+    "adjacent_change_mean": 6.7252,
+    "adjacent_change_p90": 8.5601,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 6.1659,
+    "review_sheet": ".generation/styles/review/style_liquid_metal-all.jpg"
+  },
+  {
+    "id": "style_holographic_glass",
+    "frames": 124,
+    "sha256": "2d029effd9ae5394a066305cdfbc4609fe87f4a44602a58699547b7b8479b1b8",
+    "adjacent_change_mean": 5.119,
+    "adjacent_change_p90": 5.9375,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 31.1389,
+    "review_sheet": ".generation/styles/review/style_holographic_glass-all.jpg"
+  },
+  {
+    "id": "style_bioluminescent",
+    "frames": 124,
+    "sha256": "17d111775299a7f0ff77deb127c998e872c33505d58fa1ba055afccb701869e9",
+    "adjacent_change_mean": 5.7089,
+    "adjacent_change_p90": 6.7193,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 31.5452,
+    "review_sheet": ".generation/styles/review/style_bioluminescent-all.jpg"
+  },
+  {
+    "id": "style_film_noir",
+    "frames": 124,
+    "sha256": "ab450006e304256c3d7bfa0f5eb400d34f654d6d95b74e00b14500c0019aa753",
+    "adjacent_change_mean": 7.5829,
+    "adjacent_change_p90": 9.8364,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 0.6105,
+    "review_sheet": ".generation/styles/review/style_film_noir-all.jpg"
+  },
+  {
+    "id": "style_neo_noir",
+    "frames": 124,
+    "sha256": "ee92548207a67a585ceaf882a24a72f927793a7607073a2396996ddd237ef26a",
+    "adjacent_change_mean": 5.0355,
+    "adjacent_change_p90": 5.8757,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 21.7672,
+    "review_sheet": ".generation/styles/review/style_neo_noir-all.jpg"
+  },
+  {
+    "id": "style_film_35mm",
+    "frames": 124,
+    "sha256": "827e6cb140e11e025d44e2e11c3bd67666ec401ebfdcaf759e0d1d10e904702e",
+    "adjacent_change_mean": 8.6663,
+    "adjacent_change_p90": 9.5232,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 18.0817,
+    "review_sheet": ".generation/styles/review/style_film_35mm-all.jpg"
+  },
+  {
+    "id": "style_film_16mm",
+    "frames": 124,
+    "sha256": "ff7cf28ed2349d6b2037712552ebfde28343b45f77bcaebc7a605c4f3a1d446e",
+    "adjacent_change_mean": 8.7858,
+    "adjacent_change_p90": 9.9502,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 29.4894,
+    "review_sheet": ".generation/styles/review/style_film_16mm-all.jpg"
+  },
+  {
+    "id": "style_vhs",
+    "frames": 124,
+    "sha256": "8d8e21fa17914186fde561fafca4a70a3d3d0a49cb7146961a9d0eab1935b14d",
+    "adjacent_change_mean": 7.4292,
+    "adjacent_change_p90": 8.7802,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 19.6127,
+    "review_sheet": ".generation/styles/review/style_vhs-all.jpg"
+  },
+  {
+    "id": "style_analog_home",
+    "frames": 124,
+    "sha256": "6d71247f3ad1a5a43458095590daca5584dacee67a062a9de30eb3e06153fbbb",
+    "adjacent_change_mean": 7.7259,
+    "adjacent_change_p90": 8.3657,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 28.9243,
+    "review_sheet": ".generation/styles/review/style_analog_home-all.jpg"
+  },
+  {
+    "id": "style_infrared",
+    "frames": 124,
+    "sha256": "77c92a13bdc0190a498bdbabe9eaa8280e9f1f721d0ecd1c8391b70964c45ede",
+    "adjacent_change_mean": 5.1133,
+    "adjacent_change_p90": 7.0536,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 29.7136,
+    "review_sheet": ".generation/styles/review/style_infrared-all.jpg"
+  },
+  {
+    "id": "style_bw_infrared",
+    "frames": 124,
+    "sha256": "cae6ab65cce08a408e1fbce5f124ddabd4c4e51fc06dd41687bbc78f1eb32024",
+    "adjacent_change_mean": 4.5313,
+    "adjacent_change_p90": 5.2177,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 0.4485,
+    "review_sheet": ".generation/styles/review/style_bw_infrared-all.jpg"
+  },
+  {
+    "id": "style_surveillance",
+    "frames": 124,
+    "sha256": "330066e7b2f85d87d1dec7150b16e074940d071a17d3ae189ce56215b7c693a3",
+    "adjacent_change_mean": 4.7265,
+    "adjacent_change_p90": 5.9051,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 8.1449,
+    "review_sheet": ".generation/styles/review/style_surveillance-all.jpg"
+  },
+  {
+    "id": "style_tilt_shift",
+    "frames": 124,
+    "sha256": "c7de8cde4e082599e632027ab14ffe6044c5f6d4eeb3a821d85a66fe5a3d8fab",
+    "adjacent_change_mean": 5.9681,
+    "adjacent_change_p90": 8.6458,
+    "repeated_frame_pairs": 0,
+    "mean_chroma": 22.507,
+    "review_sheet": ".generation/styles/review/style_tilt_shift-all.jpg"
+  }
+]

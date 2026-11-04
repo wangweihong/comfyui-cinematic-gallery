@@ -1,0 +1,40 @@
+{
+  "1": {
+    "class_type": "CinematicMotionGallery",
+    "inputs": {
+      "motion_id": "style_risograph",
+      "language": "zh"
+    },
+    "_meta": {
+      "title": "CinematicMotionGallery - 选择艺术风格示例"
+    }
+  },
+  "2": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "1",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "PreviewImage - 预览视频封面"
+    }
+  },
+  "3": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "1",
+        4
+      ],
+      "filename_prefix": "cinematic_gallery/motion_reference",
+      "format": "mp4",
+      "format.codec": "h264",
+      "format.codec.encoding": "auto"
+    },
+    "_meta": {
+      "title": "SaveVideo - 保存所选运镜视频"
+    }
+  }
+}

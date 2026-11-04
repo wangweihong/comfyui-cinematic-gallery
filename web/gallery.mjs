@@ -6,17 +6,20 @@ const base = new URL('../', import.meta.url);
 const endpoint = path => new URL(path, base).href;
 let kind = params.get('kind') === 'motion' ? 'motion' : 'reference';
 let targetKind = embedded ? (params.get('target') === 'motion' ? 'motion' : 'reference') : null;
+let cinemaGroup = params.get('group') === 'style' || params.get('id')?.startsWith('style_') ? 'style' : 'motion';
 let language = normalizeLanguage(params.get('lang'));
-const states = { reference: { category: 'all', query: '', selectedId: DEFAULT_ID }, motion: { category: 'all', query: '', selectedId: 'pan_right' } };
+const states = { reference: { category: 'all', query: '', selectedId: DEFAULT_ID }, motion: { category: 'all', query: '', selectedId: 'pan_right' }, style: { category: 'all', query: '', selectedId: 'style_halftone_pop' } };
+if (params.get('id')) states[kind === 'reference' ? 'reference' : cinemaGroup].selectedId = params.get('id');
 const catalogs = new Map();
 let payload = { categories: [], records: [] }, activeId = null, loading = true, failed = false, mediaReady = false, imageRequest = 0, loadRequest = 0;
 const viewer = $('viewer'), video = $('viewer-video');
-const state = () => states[kind];
+const state = () => states[kind === 'motion' ? cinemaGroup : 'reference'];
+const style = () => kind === 'motion' && cinemaGroup === 'style';
 const motion = () => kind === 'motion';
 const currentRecords = () => filterRecords(payload.records, state().category, state().query);
 const getRecord = id => payload.records.find(row => row.id === id);
-const imageURL = id => endpoint(motion() ? `motion_assets/poster/${encodeURIComponent(id)}` : `assets/${encodeURIComponent(id)}`);
-const videoURL = id => endpoint(`motion_assets/video/${encodeURIComponent(id)}`);
+const imageURL = id => endpoint(motion() ? `cinematic_assets/poster/${encodeURIComponent(id)}` : `assets/${encodeURIComponent(id)}`);
+const videoURL = id => endpoint(`cinematic_assets/video/${encodeURIComponent(id)}`);
 const post = data => { if (embedded) window.parent.postMessage({ ...data, kind }, location.origin); };
 function element(tag, className, text) {
   const item = document.createElement(tag);
@@ -29,27 +32,30 @@ function renderLanguage() {
   document.title = t(motion() ? 'motionTitle' : 'title', language);
   document.querySelectorAll('[data-text]').forEach(item => { item.textContent = t(item.dataset.text, language); });
   const text = (selector, key) => document.querySelector(selector).textContent = t(key, language);
-  text('h1', motion() ? 'motionTitle' : 'title'); text('.tagline', motion() ? 'motionSubtitle' : 'subtitle'); text('.intro', motion() ? 'motionIntro' : 'intro');
-  text('.stats div:first-child span', motion() ? 'motionCount' : 'referenceCount');
-  text('#results-text', motion() ? 'motionResults' : 'results'); text('.footer>span:first-child', motion() ? 'motionFooter' : 'footer');
+  text('h1', motion() ? 'motionTitle' : 'title'); text('.tagline', style() ? 'styleSubtitle' : motion() ? 'motionSubtitle' : 'subtitle'); text('.intro', style() ? 'styleIntro' : motion() ? 'motionIntro' : 'intro');
+  text('.stats div:first-child span', style() ? 'styleCount' : motion() ? 'motionCount' : 'referenceCount');
+  text('#results-text', style() ? 'styleResults' : motion() ? 'motionResults' : 'results'); text('.footer>span:first-child', style() ? 'styleFooter' : motion() ? 'motionFooter' : 'footer');
   text('#copy-zh', 'copy'); text('#copy-en', 'copy');
-  $('copy-zh').previousElementSibling.textContent = t(motion() ? 'prompt' : 'promptZh', language);
+  $('copy-zh').previousElementSibling.textContent = t(style() ? 'stylePrompt' : motion() ? 'prompt' : 'promptZh', language);
+  document.querySelector('.description h3').textContent = t(style() ? 'visualFeatures' : 'description', language);
   $('copy-en').previousElementSibling.textContent = t('promptEn', language);
   $('copy-en').closest('.prompt-box').hidden = motion();
   $('copy-example-zh').previousElementSibling.textContent = t('example', language);
   document.querySelector('.brand strong').textContent = language === 'zh' ? motion() ? '电影参考' : '摄影参考' : motion() ? 'CINEMATIC' : 'PHOTOGRAPHY';
-  document.querySelector('.brand small').textContent = language === 'zh' ? motion() ? '镜头与运镜' : '光线 · 构图 · 风格' : 'REFERENCE GALLERY';
-  document.querySelector('.hero .eyebrow').textContent = language === 'zh' ? motion() ? '镜头语言' : '摄影语言' : motion() ? 'THE ART OF MOVEMENT' : 'THE ART OF SEEING';
+  document.querySelector('.brand small').textContent = language === 'zh' ? motion() ? '运镜 · 艺术风格' : '光线 · 构图 · 风格' : 'REFERENCE GALLERY';
+  document.querySelector('.hero .eyebrow').textContent = language === 'zh' ? style() ? '视觉语言' : motion() ? '镜头语言' : '摄影语言' : style() ? 'THE ART OF STYLE' : motion() ? 'THE ART OF MOVEMENT' : 'THE ART OF SEEING';
   $('download').textContent = t(motion() ? 'downloadVideo' : 'download', language);
-  $('use').textContent = t(targetKind && targetKind !== kind ? 'wrongNode' : motion() ? embedded ? 'useMotion' : 'chooseMotion' : embedded ? 'use' : 'choose', language);
+  $('use').textContent = t(targetKind && targetKind !== kind ? 'wrongNode' : style() ? embedded ? 'styleUse' : 'styleChoose' : motion() ? embedded ? 'useMotion' : 'chooseMotion' : embedded ? 'use' : 'choose', language);
   document.querySelectorAll('[data-placeholder]').forEach(item => { item.placeholder = t(item.dataset.placeholder, language); item.setAttribute('aria-label', item.placeholder); });
   document.querySelectorAll('[data-label]').forEach(item => item.setAttribute('aria-label', t(item.dataset.label, language)));
   for (const lang of ['zh', 'en']) $('lang-' + lang).setAttribute('aria-pressed', String(lang === language));
+  $('cinema-groups').hidden = !motion();
+  for (const group of ['motion', 'style']) $('group-' + group).setAttribute('aria-pressed', String(group === cinemaGroup));
   for (const type of ['reference', 'motion']) $('domain-' + type).setAttribute('aria-pressed', String(type === kind));
 }
 function renderCategories() {
   const counts = new Map(payload.categories.map(row => [row.id, payload.records.filter(item => item.category === row.id).length]));
-  $('categories').replaceChildren(...[{ id: 'all', name_zh: t(motion() ? 'allMotions' : 'all', 'zh'), name_en: t(motion() ? 'allMotions' : 'all', 'en') }, ...payload.categories].map(row => {
+  $('categories').replaceChildren(...[{ id: 'all', name_zh: t(style() ? 'allStyles' : motion() ? 'allMotions' : 'all', 'zh'), name_en: t(style() ? 'allStyles' : motion() ? 'allMotions' : 'all', 'en') }, ...payload.categories].map(row => {
     const button = element('button', 'category-tab'); button.type = 'button'; button.dataset.category = row.id;
     button.setAttribute('aria-pressed', String(state().category === row.id));
     button.append(element('strong', '', local(row, 'name', language)), element('span', '', String(counts.get(row.id) ?? payload.records.length)));
@@ -111,6 +117,7 @@ function renderViewer(loadMedia = true) {
   $('example-zh-box').hidden = !motion(); $('example-en-box').hidden = true;
   $('example-zh').textContent = motion() ? local(row, 'example_prompt', language) : ''; $('example-zh').lang = language === 'zh' ? 'zh-CN' : 'en';
   $('use-cases-box').hidden = !motion(); $('use-cases').textContent = motion() ? local(row, 'use_cases', language) : '';
+  $('distinctions-box').hidden = !style(); $('distinctions').textContent = style() ? local(row, 'distinctions', language) : '';
   $('download').href = motion() ? videoURL(row.id) : imageURL(row.id); $('download').download = (motion() ? row.video : row.image) ?? '';
   $('viewer-image').alt = local(row, 'name', language); video.setAttribute('aria-label', local(row, 'name', language)); $('copy-status').textContent = '';
   const records = currentRecords(), index = records.findIndex(item => item.id === row.id);
@@ -168,12 +175,12 @@ async function load(refresh = false) {
   try {
     let data = refresh ? null : catalogs.get(requestedKind);
     if (!data) {
-      const response = await fetch(endpoint(requestedKind === 'motion' ? 'motion_catalog' : 'catalog'));
+      const response = await fetch(endpoint(requestedKind === 'motion' ? 'cinematic_catalog' : 'catalog'));
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       data = await response.json(); if (!Array.isArray(data.records) || !Array.isArray(data.categories)) throw new Error('Invalid catalog');
       catalogs.set(requestedKind, data);
     }
-    if (request !== loadRequest) return; payload = data;
+    if (request !== loadRequest) return; payload = requestedKind === 'motion' ? { ...data, categories: data.categories.filter(row => row.kind === cinemaGroup), records: data.records.filter(row => row.kind === cinemaGroup) } : data;
   } catch { if (request !== loadRequest) return; failed = true; }
   loading = false; renderCategories(); renderGrid();
 }
@@ -181,6 +188,11 @@ async function setKind(next) {
   if (next === kind) return;
   if (viewer.open) closeViewer(); activeId = null; kind = next; $('search').value = state().query; renderLanguage(); await load();
 }
+async function setGroup(next) {
+  if (next === cinemaGroup) return;
+  if (viewer.open) closeViewer(); activeId = null; cinemaGroup = next; $('search').value = state().query; renderLanguage(); await load();
+}
+$('group-motion').onclick = () => setGroup('motion'); $('group-style').onclick = () => setGroup('style');
 $('domain-reference').onclick = () => setKind('reference'); $('domain-motion').onclick = () => setKind('motion');
 $('search').addEventListener('input', event => { state().query = event.target.value; renderGrid(); });
 $('reset').onclick = () => { state().category = 'all'; state().query = ''; $('search').value = ''; renderCategories(); renderGrid(); };
@@ -205,7 +217,11 @@ document.addEventListener('keydown', event => {
 window.addEventListener('message', event => {
   if (!embedded || !validMessage(event, window.parent, location.origin) || event.data.type !== 'cinematic-gallery-current') return;
   const nodeKind = event.data.kind === 'motion' ? 'motion' : 'reference'; targetKind = nodeKind;
-  if (typeof event.data.id === 'string') states[nodeKind].selectedId = event.data.id;
+  if (typeof event.data.id === 'string') {
+    const group = event.data.id.startsWith('style_') ? 'style' : 'motion';
+    states[nodeKind === 'motion' ? group : 'reference'].selectedId = event.data.id;
+    if (nodeKind === 'motion' && kind === 'motion') setGroup(group);
+  }
   setLanguage(event.data.language, false);
 });
 renderLanguage(); await load(); post({ type: 'cinematic-gallery-ready' });

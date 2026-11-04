@@ -3,7 +3,7 @@ import asyncio
 from aiohttp import web
 from server import PromptServer
 from .catalog import ROOT, browser_catalog, image_path
-from . import motion_catalog
+from . import motion_catalog, style_catalog, cinematic_catalog
 
 routes = PromptServer.instance.routes
 UI_FILES = {"gallery.css", "gallery.mjs", "gallery_core.mjs"}
@@ -53,6 +53,31 @@ async def motion_catalog_route(request):
 async def motion_asset_route(request):
     try:
         path = motion_catalog.asset(request.match_info["motion_id"], request.match_info["kind"])
+    except (ValueError, OSError):
+        raise web.HTTPNotFound()
+    return web.FileResponse(path, headers={"Cache-Control": "no-cache"})
+
+
+@routes.get("/cinematic_gallery/style_catalog")
+async def style_catalog_route(request):
+    try:
+        return web.json_response(await asyncio.to_thread(style_catalog.browser_catalog), headers={"Cache-Control": "no-cache"})
+    except (ValueError, OSError) as exc:
+        return web.json_response({"error": str(exc)}, status=503)
+
+
+@routes.get("/cinematic_gallery/cinematic_catalog")
+async def cinematic_catalog_route(request):
+    try:
+        return web.json_response(await asyncio.to_thread(cinematic_catalog.browser_catalog), headers={"Cache-Control": "no-cache"})
+    except (ValueError, OSError) as exc:
+        return web.json_response({"error": str(exc)}, status=503)
+
+
+@routes.get("/cinematic_gallery/cinematic_assets/{kind}/{reference_id}")
+async def cinematic_asset_route(request):
+    try:
+        path = cinematic_catalog.asset(request.match_info["reference_id"], request.match_info["kind"])
     except (ValueError, OSError):
         raise web.HTTPNotFound()
     return web.FileResponse(path, headers={"Cache-Control": "no-cache"})

@@ -1,4 +1,4 @@
-"""ComfyUI node: one selected reference, five consistent bilingual outputs."""
+"""Offline photography and cinematic reference nodes."""
 import torch
 from .catalog import reference, image_path, image_array, fingerprint
 
@@ -44,7 +44,7 @@ class CinematicMotionGallery:
     def INPUT_TYPES(cls):
         return {"required": {
             "motion_id": ("STRING", {"default": "pan_right", "multiline": False,
-                "tooltip": "从电影参考图库选择镜头示例"}),
+                "tooltip": "从电影参考图库选择运镜或艺术风格"}),
             "language": (["zh", "en"], {"default": "zh", "tooltip": "界面语言 / UI language"}),
         }}
 
@@ -52,13 +52,13 @@ class CinematicMotionGallery:
     RETURN_NAMES = ("prompt", "image", "description", "example_prompt", "video")
     FUNCTION = "load_motion"
     CATEGORY = "video/Cinematic Reference"
-    DESCRIPTION = "电影参考：镜头提示词、封面、说明、完整示例与视频。文本跟随所选语言。"
+    DESCRIPTION = "电影参考：运镜或风格提示词、封面、说明、完整示例与视频。文本跟随所选语言。"
 
     @classmethod
     def VALIDATE_INPUTS(cls, motion_id, language="zh"):
-        from . import motion_catalog
+        from . import cinematic_catalog
         try:
-            motion_catalog.validate_assets(motion_id)
+            cinematic_catalog.validate_assets(motion_id)
             if language not in ("zh", "en"):
                 return "无效的界面语言 / Invalid UI language"
         except (OSError, ValueError) as exc:
@@ -67,21 +67,21 @@ class CinematicMotionGallery:
 
     @classmethod
     def IS_CHANGED(cls, motion_id, language="zh"):
-        from .motion_catalog import fingerprint
+        from .cinematic_catalog import fingerprint
         return fingerprint(motion_id) + ":" + language
 
     def load_motion(self, motion_id, language="zh"):
-        from . import motion_catalog
+        from . import cinematic_catalog
         from comfy_api.latest import InputImpl
         if language not in ("zh", "en"):
             raise ValueError("无效的界面语言 / Invalid UI language")
-        row = motion_catalog.reference(motion_id)
-        _, video_path = motion_catalog.validate_assets(motion_id)
-        poster = torch.from_numpy(motion_catalog.poster_array(motion_id))[None, ...]
+        row = cinematic_catalog.reference(motion_id)
+        _, video_path = cinematic_catalog.validate_assets(motion_id)
+        poster = torch.from_numpy(cinematic_catalog.poster_array(motion_id))[None, ...]
         video = InputImpl.VideoFromFile(str(video_path))
         try:
             video.get_dimensions()
         except Exception as exc:
-            raise ValueError(f"运镜视频损坏 / Cannot read motion video: {video_path.name}") from exc
-        return (row[f"prompt_{language}"], poster, motion_catalog.description(row, language),
+            raise ValueError(f"电影参考视频损坏 / Cannot read cinematic video: {video_path.name}") from exc
+        return (row[f"prompt_{language}"], poster, cinematic_catalog.description(row, language),
                 row[f"example_prompt_{language}"], video)

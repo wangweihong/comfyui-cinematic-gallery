@@ -4,7 +4,7 @@ import { normalizeLanguage, local, t, validMessage, migrateMotionOutputs } from 
 
 const catalogRequests = new Map();
 function getCatalog(kind = 'reference') {
-  if (!catalogRequests.has(kind)) catalogRequests.set(kind, fetch(api.apiURL(kind === 'motion' ? '/cinematic_gallery/motion_catalog' : '/cinematic_gallery/catalog')).then(response => {
+  if (!catalogRequests.has(kind)) catalogRequests.set(kind, fetch(api.apiURL(kind === 'motion' ? '/cinematic_gallery/cinematic_catalog' : '/cinematic_gallery/catalog')).then(response => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
   }).catch(error => { catalogRequests.delete(kind); throw error; }));
@@ -45,7 +45,7 @@ app.registerExtension({
         image.alt = name.textContent;
         if (isMotion) image.setAttribute('aria-label', name.textContent);
         if (imageError) status.textContent = `${t(isMotion ? 'missingVideo' : 'missing', language)} (${idWidget.value})`;
-        const labels = isMotion ? language === 'zh' ? ['镜头提示词', '封面', '说明', '完整示例', '视频'] : ['Shot prompt', 'Poster', 'Description', 'Complete example', 'Video'] : language === 'zh' ? ['中文提示词', '英文提示词', '参考图', '中文说明', '英文说明'] : ['Chinese prompt', 'English prompt', 'Reference image', 'Chinese description', 'English description'];
+        const labels = isMotion ? language === 'zh' ? ['提示词', '封面', '说明', '完整示例', '视频'] : ['Prompt', 'Poster', 'Description', 'Complete example', 'Video'] : language === 'zh' ? ['中文提示词', '英文提示词', '参考图', '中文说明', '英文说明'] : ['Chinese prompt', 'English prompt', 'Reference image', 'Chinese description', 'English description'];
         node.outputs?.forEach((output, index) => { output.label = labels[index] ?? output.name; });
         if (['CinematicGallery', 'Cinematic Gallery', 'Cinematic Gallery 电影参考图库', 'CinematicMotionGallery', 'Cinematic Motion Gallery', 'Cinematic Motion Gallery 电影运镜图库', '摄影参考', '电影参考', 'Photography Reference', 'Cinematic Reference'].includes(node.title)) node.title = isMotion ? language === 'zh' ? '电影参考' : 'Cinematic Reference' : language === 'zh' ? '摄影参考' : 'Photography Reference';
         if (heading) heading.textContent = t(isMotion ? 'motionTitle' : 'title', language);
@@ -61,7 +61,7 @@ app.registerExtension({
         image.onload = image.onloadeddata = () => { if (!removed && revision === request) { status.textContent = ''; image.hidden = false; } };
         image.onerror = () => { if (!removed && revision === request) { image.hidden = true; imageError = true; renderLanguage(); } };
         if (isMotion) image.pause();
-        image.src = api.apiURL(isMotion ? `/cinematic_gallery/motion_assets/video/${encodeURIComponent(id)}` : `/cinematic_gallery/assets/${encodeURIComponent(id)}`);
+        image.src = api.apiURL(isMotion ? `/cinematic_gallery/cinematic_assets/video/${encodeURIComponent(id)}` : `/cinematic_gallery/assets/${encodeURIComponent(id)}`);
         try {
           const payload = await getCatalog(kind);
           if (removed || revision !== request) return;
@@ -101,7 +101,7 @@ app.registerExtension({
         heading = document.createElement('strong'); done = document.createElement('button');
         done.style.cssText = 'cursor:pointer;padding:5px 15px;border:1px solid #d6dbe5;border-radius:7px;background:white;color:#5d6472;';
         done.onclick = close; header.append(heading, done);
-        frame = document.createElement('iframe'); frame.src = api.apiURL(`/cinematic_gallery/gallery?lang=${language}&kind=${kind}&target=${kind}`);
+        frame = document.createElement('iframe'); frame.src = api.apiURL(`/cinematic_gallery/gallery?lang=${language}&kind=${kind}&target=${kind}&id=${encodeURIComponent(idWidget.value)}&group=${isMotion && String(idWidget.value).startsWith('style_') ? 'style' : 'motion'}`);
         frame.style.cssText = 'width:100%;height:calc(100% - 46px);border:0;';
         dialog.append(header, frame); renderLanguage();
         dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });

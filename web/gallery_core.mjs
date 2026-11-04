@@ -5,7 +5,7 @@ export const messages = {
   title: ['摄影参考图库', 'Photography Reference Gallery'], motionTitle: ['电影参考图库', 'Cinematic Reference Gallery'],
   subtitle: ['用光线、构图与风格，建立画面表达。', 'Build images with light, composition and style.'], motionSubtitle: ['让每一次镜头运动，都服务于叙事。', 'Make every camera move serve the story.'],
   intro: ['浏览镜头、光线与风格。选中一张参考，将原图及中英文提示词、说明带入 ComfyUI。', 'Explore framing, light and style. Send one reference image, bilingual prompts and descriptions to ComfyUI.'],
-  motionIntro: ['探索镜头如何运动。观看真实视频，分别获取通用运镜与完整场景提示词。', 'Explore how cameras move. Watch video examples and get reusable motion prompts and complete scene prompts.'],
+  motionIntro: ['浏览运镜与艺术风格，观看视频并获取提示词和完整场景示例。', 'Explore camera movement and visual styles through videos, reusable prompts and complete scene examples.'],
   referenceCount: ['张参考图', 'references'], motionCount: ['个镜头条目', 'shot entries'], categoryCount: ['个分类', 'categories'], offline: ['本地素材 · 离线可用', 'Local library · Works offline'],
   all: ['全部参考', 'All references'], allMotions: ['全部镜头', 'All shots'], search: ['搜索名称、提示词、说明或编号…', 'Search names, prompts, descriptions or IDs…'],
   reset: ['重置筛选', 'Reset filters'], random: ['随机参考', 'Random reference'], results: ['条参考', 'references'], motionResults: ['个镜头', 'shots'], readyCount: ['条视频可播放', 'videos ready'],
@@ -15,7 +15,9 @@ export const messages = {
   choose: ['选择此参考', 'Select this reference'], chooseMotion: ['选择此运镜', 'Select this motion'], selected: ['已选择', 'Selected'], close: ['关闭', 'Close'], previous: ['上一张', 'Previous'], next: ['下一张', 'Next'],
   promptZh: ['中文提示词', 'Chinese prompt'], promptEn: ['英文提示词', 'English prompt'], motionPromptZh: ['通用运镜 · 中文', 'Reusable motion · Chinese'], motionPromptEn: ['通用运镜 · 英文', 'Reusable motion · English'],
   exampleZh: ['完整示例 · 中文', 'Complete example · Chinese'], exampleEn: ['完整示例 · 英文', 'Complete example · English'],
-  prompt: ['镜头提示词', 'Shot prompt'], example: ['完整示例', 'Complete example'],
+  styleFooter: ['艺术风格 · 完整示例 · 原生视频', 'Visual style · Complete example · Native video'], styleCount: ['种艺术风格', 'visual styles'], styleResults: ['种风格', 'styles'], styleSubtitle: ['同一场景，看见不同的视觉语言。', 'One scene, different visual languages.'], styleIntro: ['相同人物、场景、侧跟镜头与种子，仅改变风格提示词。', 'Matched subject, scene, tracking shot and seed. Only the style prompt changes.'], visualFeatures: ['视觉特征', 'Visual features'],
+  motionGroup: ['运镜', 'Camera movement'], styleGroup: ['风格', 'Visual styles'], allStyles: ['全部风格', 'All styles'], stylePrompt: ['风格提示词', 'Style prompt'], distinctions: ['易混淆风格', 'Distinctions'], styleUse: ['使用此风格 → ComfyUI', 'Use style → ComfyUI'], styleChoose: ['选择此风格', 'Select this style'],
+  prompt: ['提示词', 'Prompt'], example: ['完整示例', 'Complete example'],
   description: ['参考说明', 'About this reference'], useCases: ['常用场景', 'Use cases'], staticTab: ['摄影参考', 'Photography'], motionTab: ['电影参考', 'Cinematic'],
   pending: ['视频待制作', 'Video in production'], pendingHint: ['此条目已整理提示词，示例视频将在后续补齐。', 'Prompts are available; the example video will be added later.'],
   wrongNode: ['请从对应类型的节点使用', 'Use the matching node type'],
@@ -24,14 +26,14 @@ export const messages = {
   missingVideo: ['视频加载失败，请检查完整素材。', 'Video could not load. Check the complete library.'],
   footer: ['单选参考 · 双语文本 · 原尺寸图像', 'One reference · Bilingual text · Original image'], motionFooter: ['通用运镜 · 完整示例 · 原生视频', 'Reusable motion · Complete example · Native video'],
   noQueue: ['仅写回选择，不会自动运行工作流。', 'Selection only. Workflows are never queued automatically.'],
-  nodeBrowse: ['浏览摄影参考图库', 'Browse photography references'], motionBrowse: ['浏览电影参考图库', 'Browse cinematic references'], nodeId: ['参考编号', 'Reference ID'], motionId: ['运镜编号', 'Motion ID'], nodeLanguage: ['界面语言', 'UI language'],
+  nodeBrowse: ['浏览摄影参考图库', 'Browse photography references'], motionBrowse: ['浏览电影参考图库', 'Browse cinematic references'], nodeId: ['参考编号', 'Reference ID'], motionId: ['参考编号', 'Reference ID'], nodeLanguage: ['界面语言', 'UI language'],
 };
 export function t(key, language) { return messages[key]?.[normalizeLanguage(language) === 'en' ? 1 : 0] ?? key; }
 export function filterRecords(records, category = 'all', query = '') {
   const tokens = query.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
   return records.filter(row => (category === 'all' || row.category === category) && tokens.every(token =>
     [row.id, row.name_zh, row.name_en, row.prompt_zh, row.prompt_en, row.description_zh, row.description_en,
-      row.example_prompt_zh, row.example_prompt_en, row.use_cases_zh, row.use_cases_en, ...(row.aliases ?? [])]
+      row.example_prompt_zh, row.example_prompt_en, row.use_cases_zh, row.use_cases_en, row.distinctions_zh, row.distinctions_en, ...(row.aliases ?? [])]
       .join(' ').toLocaleLowerCase().includes(token)));
 }
 export function randomReference(records, currentId, random = Math.random) {

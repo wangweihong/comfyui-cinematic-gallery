@@ -5,7 +5,9 @@ import vm from 'node:vm';
 import { filterRecords, randomReference, validMessage, local, t, messages, migrateMotionOutputs } from '../web/gallery_core.mjs';
 const payload = JSON.parse(readFileSync(new URL('../library/catalog.json', import.meta.url)));
 const motionPayload = JSON.parse(readFileSync(new URL('../library/motions/catalog.json', import.meta.url)));
-for (const row of motionPayload.records) row.available = row.status === 'ready';
+const stylePayload = JSON.parse(readFileSync(new URL('../library/styles/catalog.json', import.meta.url)));
+const moviePayload = {categories: [...motionPayload.categories, ...stylePayload.categories], records: [...motionPayload.records, ...stylePayload.records]};
+for (const row of moviePayload.records) row.available = row.status === 'ready';
 
 test('filters search all bilingual fields and stable IDs, including empty results', () => {
   assert.equal(filterRecords(payload.records, 'all').length, 110);
@@ -59,7 +61,7 @@ async function fixture(type = 'CinematicGallery') {
   }
   const context = vm.createContext({ normalizeLanguage: value => value === 'en' ? 'en' : 'zh', local, t, validMessage, migrateMotionOutputs,
     app: { registerExtension: value => { extension = value; }, graph: { change: () => { changes++; } } },
-    api: { apiURL: path => '/prefix' + path }, fetch: async url => ({ ok: true, json: async () => url.includes('motion_catalog') ? motionPayload : payload }),
+    api: { apiURL: path => '/prefix' + path }, fetch: async url => ({ ok: true, json: async () => url.includes('cinematic_catalog') ? moviePayload : payload }),
     document: { createElement: tag => new Element(tag), body: { append: element => body.push(element) } },
     window: { addEventListener: (name, fn) => { listeners[name] = fn; }, removeEventListener: name => { delete listeners[name]; } },
     location: { origin: 'http://localhost' },
@@ -131,7 +133,7 @@ test('movie nodes restore five localized ports, use video previews and reject st
   assert.equal(f.node.widgets[0].value, 'truck_right');
   assert.equal(f.node.widgets[1].value, 'en');
   assert.equal(f.node.title, 'Cinematic Reference');
-  assert.equal(f.node.box.children[1].children[0].src, '/prefix/cinematic_gallery/motion_assets/video/truck_right');
+  assert.equal(f.node.box.children[1].children[0].src, '/prefix/cinematic_gallery/cinematic_assets/video/truck_right');
   f.open();
   await f.send({type:'cinematic-gallery-select',id:'camera_arri',kind:'reference'});
   assert.equal(f.node.widgets[0].value, 'truck_right');
@@ -171,6 +173,35 @@ test('loadedGraphNode upgrades old movie nodes and renders only the selected lan
   f.extension.loadedGraphNode(f.node);
   assert.equal(f.node.outputs.length,5);
   assert.equal(f.node.title,'Cinematic Reference');
-  assert.deepEqual(f.node.outputs.map(output=>output.label),['Shot prompt','Poster','Description','Complete example','Video']);
+  assert.deepEqual(f.node.outputs.map(output=>output.label),['Prompt','Poster','Description','Complete example','Video']);
   assert.deepEqual(links.map(link=>link.origin_slot),[0,0,1,2,2,3,3,4]);
+});
+
+
+test('style references restore into the same five-port movie node and remain isolated', async () => {
+  const f = await fixture('CinematicMotionGallery');
+  const other = await fixture('CinematicMotionGallery');
+  f.node.onConfigure({widgets_values:['style_risograph','en']});
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(f.node.widgets[0].label,'Reference ID');
+  assert.equal(f.node.box.children[0].textContent,'Risograph Animation');
+  assert.match(f.node.box.children[1].children[0].src,/cinematic_assets\/video\/style_risograph$/);
+  assert.deepEqual(f.node.outputs.map(output=>output.label),['Prompt','Poster','Description','Complete example','Video']);
+  f.open();
+  assert.match(f.body.at(-1).children[1].src,/group=style/);
+  await f.send({type:'cinematic-gallery-select',id:'style_unknown',kind:'motion'});
+  assert.equal(f.node.widgets[0].value,'style_risograph');
+  await f.send({type:'cinematic-gallery-select',id:'style_halftone_pop',kind:'motion',language:'zh'});
+  assert.equal(f.node.widgets[0].value,'style_halftone_pop');
+  assert.equal(f.node.outputs[0].label,'提示词');
+  assert.equal(other.node.widgets[0].value,'pan_right');
+  assert.equal(other.changes,0);
+});
+test('style search includes distinctions and shared papercraft aliases without mixing motion records', () => {
+  assert.equal(stylePayload.records.length,74);
+  assert.equal(filterRecords(stylePayload.records,'all','荧光纸艺拼贴').length,2);
+  assert.ok(filterRecords(stylePayload.records,'all','Risograph').some(row=>row.id==='style_risograph'));
+  assert.ok(filterRecords(stylePayload.records,'all','Wood effect').some(row=>row.id==='style_bw_infrared'));
+  assert.equal(filterRecords(stylePayload.records,'all','no-such-style').length,0);
+  assert.equal(filterRecords(motionPayload.records,'all','style_risograph').length,0);
 });

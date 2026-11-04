@@ -20,6 +20,7 @@
   </header>
   <section class="controls" aria-label="Gallery filters"><div class="shell">
     <div class="domain-tabs"><button id="domain-reference" data-text="staticTab" aria-pressed="true"></button><button id="domain-motion" data-text="motionTab" aria-pressed="false"></button></div>
+    <div class="domain-tabs cinema-groups" id="cinema-groups" hidden><button id="group-motion" data-text="motionGroup" aria-pressed="true"></button><button id="group-style" data-text="styleGroup" aria-pressed="false"></button></div>
     <div class="category-tabs" id="categories"></div>
     <div class="search-row"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" data-placeholder="search" autocomplete="off"><kbd>/</kbd></label><button class="button" id="reset" data-text="reset"></button><button class="button primary" id="random"><span aria-hidden="true">⚄</span> <span data-text="random"></span></button></div>
   </div></section>
@@ -42,6 +43,7 @@
         <section class="prompt-box" id="example-en-box" hidden><div><h3 data-text="exampleEn"></h3><button class="copy-button" id="copy-example-en" data-text="copy"></button></div><p id="example-en" lang="en"></p></section>
         <section class="description"><h3 data-text="description"></h3><p id="description"></p></section>
         <section class="description" id="use-cases-box" hidden><h3 data-text="useCases"></h3><p id="use-cases"></p></section>
+        <section class="description" id="distinctions-box" hidden><h3 data-text="distinctions"></h3><p id="distinctions"></p></section>
         <a class="button download" id="download" download data-text="download"></a><p class="no-queue" data-text="noQueue"></p><p id="copy-status" role="status" aria-live="polite"></p>
       </aside>
     </div>
