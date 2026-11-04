@@ -37,3 +37,51 @@ class CinematicGallery:
         row = reference(reference_id)
         image = torch.from_numpy(image_array(reference_id))[None, ...]
         return row["prompt_zh"], row["prompt_en"], image, row["description_zh"], row["description_en"]
+
+
+class CinematicMotionGallery:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {"required": {
+            "motion_id": ("STRING", {"default": "pan_right", "multiline": False,
+                "tooltip": "从电影运镜图库选择已完成的视频 / Select a completed motion example"}),
+            "language": (["zh", "en"], {"default": "zh", "tooltip": "界面语言 / UI language"}),
+        }}
+
+    RETURN_TYPES = ("STRING", "STRING", "IMAGE", "STRING", "STRING", "STRING", "STRING", "VIDEO")
+    RETURN_NAMES = ("prompt_zh", "prompt_en", "image", "description_zh", "description_en",
+                    "example_prompt_zh", "example_prompt_en", "video")
+    FUNCTION = "load_motion"
+    CATEGORY = "video/Cinematic Gallery"
+    DESCRIPTION = "电影运镜示例：通用提示词、完整示例、封面与原生视频。Motion examples with reusable prompts, scene prompts, a poster and native VIDEO."
+
+    @classmethod
+    def VALIDATE_INPUTS(cls, motion_id, language="zh"):
+        from . import motion_catalog
+        try:
+            motion_catalog.validate_assets(motion_id)
+            if language not in ("zh", "en"):
+                return "无效的界面语言 / Invalid UI language"
+        except (OSError, ValueError) as exc:
+            return str(exc)
+        return True
+
+    @classmethod
+    def IS_CHANGED(cls, motion_id, language="zh"):
+        from .motion_catalog import fingerprint
+        return fingerprint(motion_id)
+
+    def load_motion(self, motion_id, language="zh"):
+        from . import motion_catalog
+        from comfy_api.latest import InputImpl
+        row = motion_catalog.reference(motion_id)
+        _, video_path = motion_catalog.validate_assets(motion_id)
+        poster = torch.from_numpy(motion_catalog.poster_array(motion_id))[None, ...]
+        video = InputImpl.VideoFromFile(str(video_path))
+        try:
+            video.get_dimensions()
+        except Exception as exc:
+            raise ValueError(f"运镜视频损坏 / Cannot read motion video: {video_path.name}") from exc
+        return (row["prompt_zh"], row["prompt_en"], poster,
+                motion_catalog.description(row, "zh"), motion_catalog.description(row, "en"),
+                row["example_prompt_zh"], row["example_prompt_en"], video)

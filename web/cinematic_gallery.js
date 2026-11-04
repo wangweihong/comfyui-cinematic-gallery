@@ -2,23 +2,25 @@ import { app } from '../../scripts/app.js';
 import { api } from '../../scripts/api.js';
 import { normalizeLanguage, local, t, validMessage } from './gallery_core.mjs';
 
-let catalogRequest;
-function getCatalog() {
-  if (!catalogRequest) catalogRequest = fetch(api.apiURL('/cinematic_gallery/catalog')).then(response => {
+const catalogRequests = new Map();
+function getCatalog(kind = 'reference') {
+  if (!catalogRequests.has(kind)) catalogRequests.set(kind, fetch(api.apiURL(kind === 'motion' ? '/cinematic_gallery/motion_catalog' : '/cinematic_gallery/catalog')).then(response => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
-  }).catch(error => { catalogRequest = null; throw error; });
-  return catalogRequest;
+  }).catch(error => { catalogRequests.delete(kind); throw error; }));
+  return catalogRequests.get(kind);
 }
 app.registerExtension({
   name: 'comfyui-cinematic-gallery.browser',
   async beforeRegisterNodeDef(nodeType, nodeData) {
-    if (nodeData.name !== 'CinematicGallery') return;
+    if (!['CinematicGallery', 'CinematicMotionGallery'].includes(nodeData.name)) return;
+    const isMotion = nodeData.name === 'CinematicMotionGallery';
+    const kind = isMotion ? 'motion' : 'reference';
     const created = nodeType.prototype.onNodeCreated;
     nodeType.prototype.onNodeCreated = function () {
       const result = created?.apply(this, arguments);
       const node = this;
-      const idWidget = node.widgets.find(widget => widget.name === 'reference_id');
+      const idWidget = node.widgets.find(widget => widget.name === (isMotion ? 'motion_id' : 'reference_id'));
       const languageWidget = node.widgets.find(widget => widget.name === 'language');
       let language = normalizeLanguage(languageWidget.value), dialog, frame, heading, done, request = 0, removed = false;
       let selectedRow = null, imageError = false;
@@ -26,35 +28,38 @@ app.registerExtension({
       box.style.cssText = 'width:100%;height:100%;display:flex;flex-direction:column;gap:10px;font:12px/1.5 sans-serif;color:#171a21;background:#f5f7fb;padding:12px;border-radius:10px;box-sizing:border-box;overflow:hidden;';
       const name = document.createElement('strong'); name.style.cssText = 'font-size:14px;flex-shrink:0;';
       const imageBox = document.createElement('div'); imageBox.style.cssText = 'position:relative;flex:1;min-height:100px;display:grid;place-items:center;background:#eceef4;border-radius:8px;overflow:hidden;';
-      const image = document.createElement('img'); image.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;object-fit:contain;';
+      const image = document.createElement(isMotion ? 'video' : 'img'); image.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;object-fit:contain;';
+      if (isMotion) { image.controls = true; image.muted = true; image.loop = true; image.playsInline = true; image.preload = 'metadata'; }
       const status = document.createElement('p'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
       status.style.cssText = 'position:relative;margin:15px;color:#8b2e2e;text-align:center;overflow-wrap:anywhere;';
       const browse = document.createElement('button'); browse.type = 'button';
       browse.style.cssText = 'width:100%;min-height:38px;flex-shrink:0;background:#5b5bd6;border:0;border-radius:8px;color:white;cursor:pointer;font:600 12px sans-serif;';
       imageBox.append(image, status); box.append(name, imageBox, browse);
       function renderLanguage() {
-        languageWidget.value = language; languageWidget.label = t('nodeLanguage', language); idWidget.label = t('nodeId', language);
-        browse.textContent = t('nodeBrowse', language);
+        languageWidget.value = language; languageWidget.label = t('nodeLanguage', language); idWidget.label = t(isMotion ? 'motionId' : 'nodeId', language);
+        browse.textContent = t(isMotion ? 'motionBrowse' : 'nodeBrowse', language);
         name.textContent = selectedRow ? local(selectedRow, 'name', language) : String(idWidget.value);
         image.alt = name.textContent;
-        if (imageError) status.textContent = `${t('missing', language)} (${idWidget.value})`;
-        const labels = language === 'zh' ? ['中文提示词', '英文提示词', '参考图', '中文说明', '英文说明'] : ['Chinese prompt', 'English prompt', 'Reference image', 'Chinese description', 'English description'];
+        if (isMotion) image.setAttribute('aria-label', name.textContent);
+        if (imageError) status.textContent = `${t(isMotion ? 'missingVideo' : 'missing', language)} (${idWidget.value})`;
+        const labels = language === 'zh' ? ['中文提示词', '英文提示词', '参考图', '中文说明', '英文说明', '完整示例（中文）', '完整示例（英文）', '视频'] : ['Chinese prompt', 'English prompt', 'Reference image', 'Chinese description', 'English description', 'Complete example (Chinese)', 'Complete example (English)', 'Video'];
         node.outputs?.forEach((output, index) => { output.label = labels[index] ?? output.name; });
-        if (['CinematicGallery', 'Cinematic Gallery', 'Cinematic Gallery 电影参考图库'].includes(node.title)) node.title = language === 'zh' ? 'Cinematic Gallery 电影参考图库' : 'Cinematic Gallery';
-        if (heading) heading.textContent = t('title', language);
+        if (['CinematicGallery', 'Cinematic Gallery', 'Cinematic Gallery 电影参考图库', 'CinematicMotionGallery', 'Cinematic Motion Gallery', 'Cinematic Motion Gallery 电影运镜图库'].includes(node.title)) node.title = isMotion ? language === 'zh' ? 'Cinematic Motion Gallery 电影运镜图库' : 'Cinematic Motion Gallery' : language === 'zh' ? 'Cinematic Gallery 电影参考图库' : 'Cinematic Gallery';
+        if (heading) heading.textContent = t(isMotion ? 'motionTitle' : 'title', language);
         if (done) done.textContent = t('close', language);
-        if (frame) frame.title = t('title', language);
+        if (frame) frame.title = t(isMotion ? 'motionTitle' : 'title', language);
         node.setDirtyCanvas(true, true);
       }
       async function update() {
         const revision = ++request, id = String(idWidget.value);
         selectedRow = null; imageError = false; image.hidden = false; status.textContent = '';
         renderLanguage();
-        image.onload = () => { if (!removed && revision === request) { status.textContent = ''; image.hidden = false; } };
+        image.onload = image.onloadeddata = () => { if (!removed && revision === request) { status.textContent = ''; image.hidden = false; } };
         image.onerror = () => { if (!removed && revision === request) { image.hidden = true; imageError = true; renderLanguage(); } };
-        image.src = api.apiURL(`/cinematic_gallery/assets/${encodeURIComponent(id)}`);
+        if (isMotion) image.pause();
+        image.src = api.apiURL(isMotion ? `/cinematic_gallery/motion_assets/video/${encodeURIComponent(id)}` : `/cinematic_gallery/assets/${encodeURIComponent(id)}`);
         try {
-          const payload = await getCatalog();
+          const payload = await getCatalog(kind);
           if (removed || revision !== request) return;
           selectedRow = payload.records.find(row => row.id === id) ?? null; renderLanguage();
         } catch { /* Image errors remain visible; metadata can be retried by browsing. */ }
@@ -64,20 +69,20 @@ app.registerExtension({
       }
       function setLanguage(next, notifyFrame = false) {
         const previous = language; language = normalizeLanguage(next); renderLanguage();
-        if (notifyFrame) frame?.contentWindow.postMessage({ type: 'cinematic-gallery-current', id: idWidget.value, language }, location.origin);
+        if (notifyFrame) frame?.contentWindow.postMessage({ type: 'cinematic-gallery-current', id: idWidget.value, language, kind }, location.origin);
         if (language !== previous) app.graph.change();
       }
       async function receive(event) {
         if (!validMessage(event, frame?.contentWindow, location.origin)) return;
         const data = event.data;
         if (data.type === 'cinematic-gallery-ready') {
-          frame.contentWindow.postMessage({ type: 'cinematic-gallery-current', id: idWidget.value, language }, location.origin);
+          frame.contentWindow.postMessage({ type: 'cinematic-gallery-current', id: idWidget.value, language, kind }, location.origin);
         } else if (data.type === 'cinematic-gallery-language' && ['zh', 'en'].includes(data.language)) {
           setLanguage(data.language);
-        } else if (data.type === 'cinematic-gallery-select' && typeof data.id === 'string') {
+        } else if (data.type === 'cinematic-gallery-select' && typeof data.id === 'string' && (data.kind ?? 'reference') === kind) {
           const source = frame.contentWindow;
           let row;
-          try { row = (await getCatalog()).records.find(item => item.id === data.id && item.available !== false); } catch { return; }
+          try { row = (await getCatalog(kind)).records.find(item => item.id === data.id && item.available !== false); } catch { return; }
           if (!row || removed || source !== frame?.contentWindow) return;
           idWidget.value = row.id;
           if (['zh', 'en'].includes(data.language)) setLanguage(data.language);
@@ -92,7 +97,7 @@ app.registerExtension({
         heading = document.createElement('strong'); done = document.createElement('button');
         done.style.cssText = 'cursor:pointer;padding:5px 15px;border:1px solid #d6dbe5;border-radius:7px;background:white;color:#5d6472;';
         done.onclick = close; header.append(heading, done);
-        frame = document.createElement('iframe'); frame.src = api.apiURL(`/cinematic_gallery/gallery?lang=${language}`);
+        frame = document.createElement('iframe'); frame.src = api.apiURL(`/cinematic_gallery/gallery?lang=${language}&kind=${kind}&target=${kind}`);
         frame.style.cssText = 'width:100%;height:calc(100% - 46px);border:0;';
         dialog.append(header, frame); renderLanguage();
         dialog.addEventListener('cancel', event => { event.preventDefault(); close(); });
@@ -113,8 +118,8 @@ app.registerExtension({
         language = normalizeLanguage(languageWidget.value); update();
       };
       const remove = node.onRemoved;
-      node.onRemoved = function () { removed = true; request++; close(); remove?.apply(this, arguments); };
-      node.setSize([390, 470]); update(); return result;
+      node.onRemoved = function () { removed = true; request++; if (isMotion) { image.pause(); image.removeAttribute('src'); image.load(); } close(); remove?.apply(this, arguments); };
+      node.setSize(isMotion ? [410, 560] : [390, 470]); update(); return result;
     };
   },
 });

@@ -1,0 +1,40 @@
+{
+  "1": {
+    "class_type": "CinematicMotionGallery",
+    "inputs": {
+      "motion_id": "pan_right",
+      "language": "zh"
+    },
+    "_meta": {
+      "title": "CinematicMotionGallery - 选择运镜素材"
+    }
+  },
+  "2": {
+    "class_type": "PreviewImage",
+    "inputs": {
+      "images": [
+        "1",
+        2
+      ]
+    },
+    "_meta": {
+      "title": "PreviewImage - 预览视频封面"
+    }
+  },
+  "3": {
+    "class_type": "SaveVideo",
+    "inputs": {
+      "video": [
+        "1",
+        7
+      ],
+      "filename_prefix": "cinematic_gallery/motion_reference",
+      "format": "mp4",
+      "format.codec": "h264",
+      "format.codec.encoding": "auto"
+    },
+    "_meta": {
+      "title": "SaveVideo - 保存所选运镜视频"
+    }
+  }
+}

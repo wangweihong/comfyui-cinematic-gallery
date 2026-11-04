@@ -19,25 +19,29 @@
     <div class="shell hero"><div><p class="eyebrow">THE ART OF SEEING</p><h1 data-text="title"></h1><p class="tagline" data-text="subtitle"></p><p class="intro" data-text="intro"></p></div><div class="stats"><div><strong id="reference-count">—</strong><span data-text="referenceCount"></span></div><div><strong id="category-count">—</strong><span data-text="categoryCount"></span></div></div></div>
   </header>
   <section class="controls" aria-label="Gallery filters"><div class="shell">
+    <div class="domain-tabs"><button id="domain-reference" data-text="staticTab" aria-pressed="true"></button><button id="domain-motion" data-text="motionTab" aria-pressed="false"></button></div>
     <div class="category-tabs" id="categories"></div>
     <div class="search-row"><label class="search-box"><span aria-hidden="true">⌕</span><input id="search" type="search" data-placeholder="search" autocomplete="off"><kbd>/</kbd></label><button class="button" id="reset" data-text="reset"></button><button class="button primary" id="random"><span aria-hidden="true">⚄</span> <span data-text="random"></span></button></div>
   </div></section>
   <main class="shell main">
-    <div class="results-bar"><p><strong id="result-count">0</strong> <span data-text="results"></span></p><p id="selection-label" class="selection-label"></p></div>
+    <div class="results-bar"><p><strong id="result-count">0</strong> <span id="results-text" data-text="results"></span> <span id="ready-count"></span></p><p id="selection-label" class="selection-label"></p></div>
     <div id="status" class="status" role="status" aria-live="polite"><h2 data-text="loading"></h2></div>
     <div class="gallery-grid" id="grid"></div>
   </main>
   <footer class="shell footer"><span data-text="footer"></span><span data-text="noQueue"></span></footer>
   <dialog id="viewer" class="viewer" aria-labelledby="viewer-title">
     <div class="viewer-panel">
-      <div class="viewer-stage"><img id="viewer-image" alt=""><p id="image-status" role="status"></p><button class="viewer-nav prev" id="previous" data-label="previous">‹</button><button class="viewer-nav next" id="next" data-label="next">›</button><span id="viewer-position" class="viewer-position"></span></div>
+      <div class="viewer-stage"><img id="viewer-image" alt=""><video id="viewer-video" controls muted playsinline loop preload="metadata" hidden></video><p id="image-status" role="status"></p><button class="viewer-nav prev" id="previous" data-label="previous">‹</button><button class="viewer-nav next" id="next" data-label="next">›</button><span id="viewer-position" class="viewer-position"></span></div>
       <aside class="viewer-side">
         <div class="detail-top"><span class="eyebrow" id="viewer-category"></span><button class="close-button" id="close" data-label="close">✕</button></div>
         <h2 id="viewer-title"></h2><p id="viewer-other-name" class="other-name"></p><code id="viewer-id"></code>
         <button class="button primary use-button" id="use" data-text="use"></button>
         <section class="prompt-box"><div><h3 data-text="promptZh"></h3><button class="copy-button" id="copy-zh" data-text="copy"></button></div><p id="prompt-zh" lang="zh-CN"></p></section>
         <section class="prompt-box"><div><h3 data-text="promptEn"></h3><button class="copy-button" id="copy-en" data-text="copy"></button></div><p id="prompt-en" lang="en"></p></section>
+        <section class="prompt-box" id="example-zh-box" hidden><div><h3 data-text="exampleZh"></h3><button class="copy-button" id="copy-example-zh" data-text="copy"></button></div><p id="example-zh" lang="zh-CN"></p></section>
+        <section class="prompt-box" id="example-en-box" hidden><div><h3 data-text="exampleEn"></h3><button class="copy-button" id="copy-example-en" data-text="copy"></button></div><p id="example-en" lang="en"></p></section>
         <section class="description"><h3 data-text="description"></h3><p id="description"></p></section>
+        <section class="description" id="use-cases-box" hidden><h3 data-text="useCases"></h3><p id="use-cases"></p></section>
         <a class="button download" id="download" download data-text="download"></a><p class="no-queue" data-text="noQueue"></p><p id="copy-status" role="status" aria-live="polite"></p>
       </aside>
     </div>

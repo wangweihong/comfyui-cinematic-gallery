@@ -1,0 +1,174 @@
+{
+  "last_node_id": 3,
+  "last_link_id": 2,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CinematicMotionGallery",
+      "title": "CinematicMotionGallery - 选择运镜素材",
+      "pos": [
+        30,
+        30
+      ],
+      "size": [
+        410,
+        560
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt_zh",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "prompt_en",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            1
+          ]
+        },
+        {
+          "name": "description_zh",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "description_en",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "example_prompt_zh",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "example_prompt_en",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            2
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CinematicMotionGallery"
+      },
+      "widgets_values": [
+        "pan_right",
+        "zh"
+      ]
+    },
+    {
+      "id": 2,
+      "type": "PreviewImage",
+      "title": "PreviewImage - 预览视频封面",
+      "pos": [
+        510,
+        30
+      ],
+      "size": [
+        400,
+        300
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 1
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 3,
+      "type": "SaveVideo",
+      "title": "SaveVideo - 保存所选运镜视频",
+      "pos": [
+        510,
+        380
+      ],
+      "size": [
+        400,
+        400
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": null
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "cinematic_gallery/motion_reference",
+        "mp4",
+        "h264",
+        "auto",
+        0
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      2,
+      2,
+      0,
+      "IMAGE"
+    ],
+    [
+      2,
+      1,
+      7,
+      3,
+      0,
+      "VIDEO"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1,
+      "offset": [
+        20,
+        20
+      ]
+    }
+  },
+  "version": 0.4
+}

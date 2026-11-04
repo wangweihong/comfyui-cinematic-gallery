@@ -1,6 +1,6 @@
 [project]
 name = "comfyui-cinematic-gallery"
-version = "0.1.0"
+version = "0.2.0"
 description = "Offline cinematic reference gallery with bilingual prompts and descriptions for ComfyUI"
 requires-python = ">=3.10"
 dependencies = ["Pillow", "numpy", "torch", "aiohttp"]

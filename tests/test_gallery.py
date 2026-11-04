@@ -92,7 +92,7 @@ class LibraryTests(unittest.TestCase):
                 finally: catalog.catalog.cache_clear()
 
     def test_registration_is_isolated(self):
-        self.assertEqual(set(plugin.NODE_CLASS_MAPPINGS), {'CinematicGallery'})
+        self.assertEqual(set(plugin.NODE_CLASS_MAPPINGS), {'CinematicGallery', 'CinematicMotionGallery'})
         self.assertFalse({'CinematicPromptNode', 'CinematicLoaderNode', 'PoseGallery'} & set(plugin.NODE_CLASS_MAPPINGS))
         self.assertEqual(set(Node.INPUT_TYPES()['required']), {'reference_id', 'language'})
         self.assertEqual(Node.INPUT_TYPES()['required']['reference_id'][1]['default'], 'camera_arri')

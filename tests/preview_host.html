@@ -1,14 +1,20 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Cinematic node integration fixture</title></head>
-<body style="font:14px sans-serif;background:#eef0f4;padding:20px"><h1>ComfyUI extension test fixture</h1><p>Tests the real frontend extension with a minimal node host; no inference or queue.</p><button id="save">Save workflow inputs</button> <button id="restore">Restore saved inputs</button><pre id="state"></pre><div id="node" style="width:370px;height:280px"></div><script type="module">
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>Cinematic nodes integration fixture</title></head>
+<body style="font:14px sans-serif;background:#eef0f4;padding:20px"><h1>ComfyUI extension test fixture</h1><p>Real frontend code, two isolated test nodes, no inference or queue.</p><button id="save">Save workflow inputs</button> <button id="restore">Restore saved inputs</button><pre id="state"></pre><div style="display:flex;gap:25px"><section><h2>Still reference</h2><div id="reference-node" style="width:390px;height:300px"></div></section><section><h2>Motion example</h2><div id="motion-node" style="width:410px;height:300px"></div></section></div><script type="module">
 import '/extensions/cinematic_gallery/cinematic_gallery.js';
 const state = document.getElementById('state');
-class FixtureNode {
-  constructor() { this.widgets = [{name:'reference_id',value:'camera_arri'},{name:'language',value:'zh'}]; this.outputs = Array.from({length:5},()=>({})); this.title = 'CinematicGallery'; }
-  addDOMWidget(name,type,element) { document.getElementById('node').replaceChildren(element); }
-  setSize() {} setDirtyCanvas() { state.textContent = JSON.stringify({inputs:this.widgets.map(w=>w.value),outputs:this.outputs.map(o=>o.label)},null,2); }
+let nodes = {}, saved;
+function render() { state.textContent = JSON.stringify(Object.fromEntries(Object.entries(nodes).map(([kind,node])=>[kind,{inputs:node.widgets.map(w=>w.value),outputs:node.outputs.map(o=>o.label)}])),null,2); }
+async function create(kind, config) {
+ const isMotion=kind==='motion',type=isMotion?'CinematicMotionGallery':'CinematicGallery';
+ class FixtureNode {
+  constructor() { this.widgets=[{name:isMotion?'motion_id':'reference_id',value:isMotion?'pan_right':'camera_arri'},{name:'language',value:'zh'}];this.outputs=Array.from({length:isMotion?8:5},()=>({}));this.title=type; }
+  addDOMWidget(name,type,element) { document.getElementById(kind+'-node').replaceChildren(element); }
+  setSize() {} setDirtyCanvas() { render(); }
+ }
+ await window.fixtureExtension.beforeRegisterNodeDef(FixtureNode,{name:type});
+ const node=new FixtureNode();nodes[kind]=node;node.onNodeCreated();if(config)node.onConfigure(config);return node;
 }
-await window.fixtureExtension.beforeRegisterNodeDef(FixtureNode,{name:'CinematicGallery'});
-let node = new FixtureNode(); node.onNodeCreated(); let saved;
-document.getElementById('save').onclick=()=>{saved={widgets_values:node.widgets.map(w=>w.value)};};
-document.getElementById('restore').onclick=()=>{if(!saved)return;node.onRemoved();node=new FixtureNode();node.onNodeCreated();node.onConfigure(saved);};
+await create('reference');await create('motion');render();
+document.getElementById('save').onclick=()=>{saved=Object.fromEntries(Object.entries(nodes).map(([kind,node])=>[kind,{widgets_values:node.widgets.map(w=>w.value)}]));};
+document.getElementById('restore').onclick=async()=>{if(!saved)return;for(const node of Object.values(nodes))node.onRemoved();await create('reference',saved.reference);await create('motion',saved.motion);render();};
 </script></body></html>
