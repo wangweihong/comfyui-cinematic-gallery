@@ -44,7 +44,7 @@ test('translations cover every visible UI string, with a distinct namespace and 
 async function fixture(type = 'CinematicGallery') {
   const isMotion = type === 'CinematicMotionGallery';
   let extension, changes = 0;
-  const listeners = {}, body = [];
+  const listeners = {}, body = [], opened = [];
   class Element {
     constructor(tag) { this.tagName = tag; this.style = {}; this.children = []; this.events = {}; this.contentWindow = { postMessage: (...data) => { this.sent = data; } }; }
     append(...children) { this.children.push(...children); }
@@ -63,7 +63,7 @@ async function fixture(type = 'CinematicGallery') {
     app: { registerExtension: value => { extension = value; }, graph: { change: () => { changes++; } } },
     api: { apiURL: path => '/prefix' + path }, fetch: async url => ({ ok: true, json: async () => url.includes('cinematic_catalog') ? moviePayload : payload }),
     document: { createElement: tag => new Element(tag), body: { append: element => body.push(element) } },
-    window: { addEventListener: (name, fn) => { listeners[name] = fn; }, removeEventListener: name => { delete listeners[name]; } },
+    window: { open: (...args) => { opened.push(args); }, addEventListener: (name, fn) => { listeners[name] = fn; }, removeEventListener: name => { delete listeners[name]; } },
     location: { origin: 'http://localhost' },
   });
   const source = readFileSync(new URL('../web/cinematic_gallery.js', import.meta.url), 'utf8').replace(/^import .*;\s*$/gm, '');
@@ -71,9 +71,20 @@ async function fixture(type = 'CinematicGallery') {
   await extension.beforeRegisterNodeDef(Node, { name: type });
   const node = new Node(); node.onNodeCreated();
   await new Promise(resolve => setImmediate(resolve));
-  return { node, extension, get changes() { return changes; }, body, listeners, open: () => node.box.children[2].events.click(),
+  return { node, extension, get changes() { return changes; }, body, listeners, opened, open: () => node.box.children[2].events.click(),
     send: async (data, origin = 'http://localhost', source) => listeners.message?.({ data, origin, source: source ?? body.at(-1).children[1].contentWindow }) };
 }
+test('top toolbar opens the prefixed movie gallery without changing workflow or node selection', async () => {
+  const f = await fixture();
+  assert.equal(f.extension.actionBarButtons.length, 1);
+  const button = f.extension.actionBarButtons[0];
+  assert.equal(button.label, '电影参考');
+  button.onClick();
+  assert.deepEqual(f.opened[0], ['/prefix/cinematic_gallery/gallery?kind=motion', '_blank', 'noopener,noreferrer']);
+  assert.equal(f.node.widgets[0].value, 'camera_arri');
+  assert.equal(f.changes, 0);
+  assert.equal(f.body.length, 0);
+});
 test('preview, language and selection restore from serialized inputs without queueing or graph edits', async () => {
   const fixtureData = await fixture(), { node } = fixtureData;
   const image = node.box.children[1].children[0];

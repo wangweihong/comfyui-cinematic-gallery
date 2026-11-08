@@ -22,6 +22,10 @@ git clone https://github.com/wangweihong/comfyui-cinematic-gallery.git
 
 图库也可通过同一 ComfyUI 服务的 `/cinematic_gallery/gallery` 独立浏览。独立页面的“选择此参考”仅改变当前页面的选择；将素材写回节点需要从节点打开图库。
 
+ComfyUI 顶部工具栏提供 **电影参考** 入口，点击后在新标签页打开运镜与艺术风格图库，无需先添加节点。可在图库中切换摄影参考；浏览入口不会更改工作流或自动排队。需要将参考带入工作流时，从对应节点打开图库并点击“使用”。
+
+![顶部工具栏的电影参考入口](docs/toolbar-zh.png)
+
 ## 摄影参考节点：五个输出
 
 | 输出 | 类型 | 内容与连接方式 |

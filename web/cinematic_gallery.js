@@ -12,6 +12,14 @@ function getCatalog(kind = 'reference') {
 }
 app.registerExtension({
   name: 'comfyui-cinematic-gallery.browser',
+  actionBarButtons: [{
+    icon: 'pi pi-video',
+    label: '电影参考',
+    tooltip: '浏览电影运镜与艺术风格参考图库',
+    onClick() {
+      window.open(api.apiURL('/cinematic_gallery/gallery?kind=motion'), '_blank', 'noopener,noreferrer');
+    },
+  }],
   loadedGraphNode(node) {
     if ((node.comfyClass ?? node.type) === 'CinematicMotionGallery') { migrateMotionOutputs(node); node.cinematicRenderLanguage?.(); }
   },
