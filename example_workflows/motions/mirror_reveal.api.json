@@ -1,0 +1,258 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "minmaxh3/diffusion_models/minimax_h3_fl2va_pruned_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "UNETLoader - 加载H3 FL2VA模型"
+    }
+  },
+  "2": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "text_encoders/qwen3vl_32b_minimax_h3_int8_convrot.safetensors",
+      "type": "minimax",
+      "device": "default"
+    },
+    "_meta": {
+      "title": "CLIPLoader - 加载H3文本编码器"
+    }
+  },
+  "3": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "vae/minimax_h3_video_vae_int8_convrot.safetensors"
+    },
+    "_meta": {
+      "title": "VAELoader - 加载视频VAE"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "vae/minimax_h3_audio_vae_fp32.safetensors"
+    },
+    "_meta": {
+      "title": "VAELoader - 加载音频VAE"
+    }
+  },
+  "5": {
+    "class_type": "MiniMaxH3ImageToVideo",
+    "inputs": {
+      "clip": [
+        "2",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ],
+      "prompt": "A woman in a red coat washes her hands at a bathroom sink, facing a large mirror. The camera glides behind her and past the mirror's edge. In the mirror, a man in a dark suit is revealed standing in the doorway behind her; she looks up and sees him. The camera continues to the side to show the real doorway. No cuts, consistent mirror geometry. Move the camera past a mirror so the reflection reveals a hidden subject behind the camera, then continue the move to show the real space. Keep the mirror frame and reflected geometry physically consistent; no cut. Photorealistic cinematography, natural lighting, stable spatial geometry, no text, subtitles, watermarks or logos. One continuous shot, no cuts.",
+      "width": 576,
+      "height": 320,
+      "length": 192
+    },
+    "_meta": {
+      "title": "MiniMaxH3ImageToVideo - 编码完整示例并创建0.2MP视频潜空间"
+    }
+  },
+  "6": {
+    "class_type": "RandomNoise",
+    "inputs": {
+      "noise_seed": 2026111025
+    },
+    "_meta": {
+      "title": "RandomNoise - 设置可复现随机种子"
+    }
+  },
+  "7": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "_meta": {
+      "title": "KSamplerSelect - 选择欧拉采样器"
+    }
+  },
+  "8": {
+    "class_type": "BasicScheduler",
+    "inputs": {
+      "model": [
+        "16",
+        0
+      ],
+      "scheduler": "beta",
+      "steps": 4,
+      "denoise": 1.0
+    },
+    "_meta": {
+      "title": "BasicScheduler - 设置4步Turbo采样"
+    }
+  },
+  "9": {
+    "class_type": "BasicGuider",
+    "inputs": {
+      "model": [
+        "16",
+        0
+      ],
+      "conditioning": [
+        "5",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "BasicGuider - 使用单条件引导"
+    }
+  },
+  "10": {
+    "class_type": "SamplerCustomAdvanced",
+    "inputs": {
+      "noise": [
+        "6",
+        0
+      ],
+      "guider": [
+        "9",
+        0
+      ],
+      "sampler": [
+        "7",
+        0
+      ],
+      "sigmas": [
+        "8",
+        0
+      ],
+      "latent_image": [
+        "5",
+        1
+      ]
+    },
+    "_meta": {
+      "title": "SamplerCustomAdvanced - 生成真实运镜帧序列"
+    }
+  },
+  "11": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "10",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "VAEDecode - 解码视频画面"
+    }
+  },
+  "12": {
+    "class_type": "VAEDecodeAudio",
+    "inputs": {
+      "samples": [
+        "10",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "VAEDecodeAudio - 解码原生音频"
+    }
+  },
+  "13": {
+    "class_type": "easy loraStack",
+    "inputs": {
+      "toggle": true,
+      "mode": "simple",
+      "num_loras": 1,
+      "lora_1_name": "minimaxh3/minimax_h3_fl2v_turbo_4step_v1.2_768p_comfyui_bf16.safetensors",
+      "lora_1_strength": 1.0,
+      "lora_1_model_strength": 1.0,
+      "lora_1_clip_strength": 1.0
+    },
+    "_meta": {
+      "title": "easy loraStack - 启用H3 Turbo 4步LoRA"
+    }
+  },
+  "14": {
+    "class_type": "easy loraStackApply",
+    "inputs": {
+      "lora_stack": [
+        "13",
+        0
+      ],
+      "model": [
+        "1",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "easy loraStackApply - 将LoRA应用到模型"
+    }
+  },
+  "15": {
+    "class_type": "ModelAttentionBackend",
+    "inputs": {
+      "model": [
+        "14",
+        0
+      ],
+      "attention": "comfy kitchen attention"
+    },
+    "_meta": {
+      "title": "ModelAttentionBackend - 使用Comfy Kitchen INT8稠密后端"
+    }
+  },
+  "16": {
+    "class_type": "VedaSparseAttention",
+    "inputs": {
+      "model": [
+        "15",
+        0
+      ],
+      "predictor": "minimax_h3_t2va_veda_8nfe_600step_preview_fp8.safetensors",
+      "generated_sparsity": "trained",
+      "reference_sparsity": "trained",
+      "full_attention_layers": "",
+      "full_attention_steps": "",
+      "verbose": true
+    },
+    "_meta": {
+      "title": "VedaSparseAttention - 应用VEDA稀疏注意力加速"
+    }
+  },
+  "17": {
+    "class_type": "VHS_VideoCombine",
+    "inputs": {
+      "images": [
+        "11",
+        0
+      ],
+      "audio": [
+        "12",
+        0
+      ],
+      "frame_rate": 24,
+      "loop_count": 0,
+      "filename_prefix": "videos/minimaxh3/motions/mirror_reveal",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true
+    },
+    "_meta": {
+      "title": "VHS_VideoCombine - 保存H3候选镜头"
+    }
+  }
+}

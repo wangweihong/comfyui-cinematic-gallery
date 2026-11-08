@@ -21,10 +21,10 @@ Node = plugin.NODE_CLASS_MAPPINGS['CinematicMotionGallery']
 class MotionTests(unittest.TestCase):
     def test_bilingual_catalog_pending_content_and_generic_prompts(self):
         payload = catalog.catalog()
-        self.assertEqual(len(payload['categories']), 7)
-        self.assertEqual(len(payload['records']), 40)
-        self.assertEqual(len({row['id'] for row in payload['records']}), 40)
-        self.assertEqual(sum(row['status'] == 'ready' for row in payload['records']), 40)
+        self.assertEqual(len(payload['categories']), 13)
+        self.assertEqual(len(payload['records']), 99)
+        self.assertEqual(len({row['id'] for row in payload['records']}), 99)
+        self.assertEqual(sum(row['status'] == 'ready' for row in payload['records']), 99)
         for row in payload['records']:
             for field in catalog.FIELDS:
                 self.assertTrue(row[field].strip(), (row['id'],field))
@@ -53,8 +53,10 @@ class MotionTests(unittest.TestCase):
             self.assertEqual(array.shape,(320,576,3))
             self.assertGreaterEqual(array.min(),0);self.assertLessEqual(array.max(),1)
             graph=json.loads((ROOT/row['generation']['workflow']).read_text())
-            self.assertEqual(graph['4']['inputs']['prompt'],row['example_prompt_en'])
-            self.assertEqual(graph['5']['inputs']['noise_seed'],row['generation']['seed'])
+            by_type={node['class_type']:node for node in graph.values()}
+            prompt_node=by_type.get('MiniMaxH3ImageToVideo') or by_type['MiniMaxH3ReferenceToVideo']
+            self.assertEqual(prompt_node['inputs']['prompt'],row['example_prompt_en'])
+            self.assertEqual(by_type['RandomNoise']['inputs']['noise_seed'],row['generation']['seed'])
             self.assertTrue(all(' - ' in node['_meta']['title'] for node in graph.values()))
         self.assertEqual(videos,{p.name for p in (catalog.LIBRARY/'videos').iterdir()})
 
@@ -102,8 +104,8 @@ class MotionRouteTests(unittest.IsolatedAsyncioTestCase):
     async def test_range_requests_pending_assets_and_complete_catalog(self):
         response=await self.client.get('/cinematic_gallery/motion_catalog')
         data=await response.json()
-        self.assertEqual(len(data['records']),40)
-        self.assertEqual(sum(row['available'] for row in data['records']),40)
+        self.assertEqual(len(data['records']),99)
+        self.assertEqual(sum(row['available'] for row in data['records']),99)
         response=await self.client.get('/cinematic_gallery/motion_assets/video/pan_right',headers={'Range':'bytes=0-127'})
         self.assertEqual(response.status,206)
         self.assertEqual(await response.read(),catalog.asset('pan_right','video').read_bytes()[:128])

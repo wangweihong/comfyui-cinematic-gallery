@@ -1,6 +1,8 @@
 # 用户清单覆盖核对
 
-40 条电影参考均已提供视频。原清单中的上位概念与同义名称映射到规范条目，不重复制造同内容占位。
+2026-11-08 更新：电影参考现有 99 条视频、13 个分类。下表记录首批 40 条的原清单映射；2026-11-08 的三次增补见文末。
+
+首批 40 条电影参考均已提供视频。原清单中的上位概念与同义名称映射到规范条目，不重复制造同内容占位。
 
 | 原名称 | 对应条目 | 视频状态 |
 | --- | --- | --- |
@@ -33,3 +35,47 @@
 | 低角揭示 | 低角度上升揭示 | 已完成 |
 | 跟随推进 | 后方跟随推进 | 已完成 |
 | 低弧绕行 | 低机位小弧绕行 | 已完成 |
+
+## 2026-11-08 第一批增补（5 个名称，新增 3 条）
+
+本轮名称先与既有条目核对，只有与既有条目存在实质差异的才新增：
+
+| 原名称 | 处理 | 对应条目 | 说明 |
+| --- | --- | --- | --- |
+| 主观移动 | 已有，未新增 | 主观镜头（`pov`） | 该条目已采用角色眼位视点，示例本身是连续移动的第一人称镜头。 |
+| 细节到全景 | 新增 | 细节到全景（`detail_to_wide`） | 从极近局部细节连续后拉到极远景；既有“后拉揭示”从主体近景开始、终点为环境，尺度跨度不同。 |
+| 前景擦过 | 新增 | 前景擦过（`foreground_wipe`） | 主体保持可见，近处石柱反复掠过镜头；既有“遮挡揭示”从遮挡物后移出以揭示主体。 |
+| 360度环绕 | 新增 | 360度环绕（`orbit_360`） | 完整一圈并回到起始方位；既有“环绕人物”约九十度。 |
+| 焦点转移 | 已有，未新增 | 拉焦切换（`rack_focus`） | 机位固定、清晰焦平面在前后景之间转移，技术上即焦点转移。 |
+
+## 2026-11-08 第二批增补（33 条，新增 4 个分类）
+
+本轮把此前列出的非重复项全部加入，并新增伪拍摄四类。
+
+| 分类 | 新增条目 |
+| --- | --- |
+| 视角与机位 +5 | 顶视跟随 `top_down_tracking`、低角度跟随 `low_angle_tracking`、斜角跟拍 `dutch_tracking`、人体固定机位 `snorricam`、主观倒地 `pov_fall` |
+| 跟随运动 +1 | 侧后跟随 `rear_quarter_follow` |
+| 组合轨迹 +4 | 环绕推进 `orbit_push`、FPV 俯冲 `fpv_dive`、推近拉焦 `dolly_rack_focus`、过肩推进 `ots_push` |
+| 揭示与穿越 +2 | 镜面反射揭示 `mirror_reveal`、摇摄揭示 `pan_reveal` |
+| 光学与时间效果 +5 | 大范围移动延时 `hyperlapse`、升格慢动作 `slow_motion`、速度渐变 `speed_ramp`、急推/急拉 `crash_zoom`、倒放 `reverse_motion` |
+| 剪辑组合 +4 | 甩镜转场 `whip_pan_transition`、跳切 `jump_cut`、匹配剪辑 `match_cut`、一镜到底 `oner` |
+| 伪监控 +4 | 伪监控 `fake_cctv`、伪行车记录仪 `fake_dashcam`、伪执法记录仪 `fake_bodycam`、伪网络摄像头 `fake_webcam` |
+| 伪录像 +2 | 伪录像 `fake_camcorder`、伪家庭录像 `fake_home_video` |
+| 伪手机 +2 | 伪手机拍摄 `fake_phone_filming`、伪手机自拍 `fake_phone_selfie` |
+| 动物机位 +4 | 老鼠机位 `mouse_cam`、蚊子机位 `mosquito_cam`、鸟类机位 `bird_cam`、宠物机位 `pet_cam` |
+
+未新增的近似项：手持跟随（`handheld` 已是行走手持）、升降+俯仰揭示（`crane_up` 已含越墙下俯）、航拍环绕（与 `spiral_rise` 上升环绕接近）、左摇/下摇/左移/下降（方向镜像）、螺旋下降（`spiral_rise` 镜像）、桶滚（`camera_roll`）、变焦推拉（`dolly_zoom`）、拉焦（`rack_focus`）、遮挡转场（`foreground_wipe`/`occlusion_reveal`）、快速摇镜（`whip_pan`）。
+
+伪拍摄四类与风格库的 `style_surveillance`、`style_vhs`、`style_analog_home` 不重复：风格条目只改变画面外观，伪拍摄条目改变机位、运动和取景方式；监控与记录仪条目在后期叠加时间码和机位号。
+
+## 2026-11-08 第三批增补（23 条：景别 10 + 灯光 13）
+
+与风格库使用同一基础场景和种子 `202611040001`，景别只改变取景距离，灯光只改变布光，便于横向对照。
+
+| 分类 | 新增条目 |
+| --- | --- |
+| 景别 +10 | 定场远景 `shot_establishing`、远景 `shot_wide`、全景/全身 `shot_full`、牛仔镜头 `shot_cowboy`、中景 `shot_medium`、中近景 `shot_medium_close`、近景 `shot_close`、特写 `shot_close_up`、极特写 `shot_extreme_close`、微距 `shot_macro` |
+| 灯光 +13 | 黄金时刻 `light_golden`、蓝调时刻 `light_blue`、正午硬光 `light_noon`、阴天柔光 `light_overcast`、伦勃朗光 `light_rembrandt`、明暗对照 `light_chiaroscuro`、剪影逆光 `light_silhouette`、霓虹夜景 `light_neon`、烛光 `light_candle`、月光 `light_moon`、体积光 `light_volumetric`、实用街灯 `light_practical`、生物荧光 `light_biolum` |
+
+说明：景别与灯光与摄影参考图库的 `framing`、`lighting` 分类同名但属于电影参考视频分组；摄影参考的 10 张景别和 13 张灯光图片保持不变。

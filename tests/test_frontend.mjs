@@ -128,12 +128,12 @@ test('unrelated ToolBox and Pose Gallery node types are not patched', async () =
 });
 
 test('motion search includes aliases, example scenes and uses while random excludes pending videos', () => {
-  assert.equal(motionPayload.records.length, 40);
+  assert.equal(motionPayload.records.length, 99);
   assert.equal(filterRecords(motionPayload.records, 'all', '希区柯克变焦')[0].id, 'dolly_zoom');
   assert.equal(filterRecords(motionPayload.records, 'all', 'German automotive')[0].id, 'key_handoff');
   assert.equal(filterRecords(motionPayload.records, 'all', 'plant a clue')[0].id, 'key_handoff');
   const usable = motionPayload.records.filter(row => row.available);
-  assert.equal(usable.length, 40);
+  assert.equal(usable.length, 99);
   for (let index = 0; index < 30; index++) assert.equal(randomReference(motionPayload.records).status, 'ready');
 });
 test('movie nodes restore five localized ports, use video previews and reject static selections', async () => {
@@ -155,7 +155,7 @@ test('movie nodes restore five localized ports, use video previews and reject st
 
 
 test('all requested common shot names resolve to completed references', () => {
-  const names = ['摇镜','移镜','横移','升降镜','环绕镜','变焦推拉','手持抖动','甩镜','主观镜头','无人机航拍','光学变焦','前跟镜','侧跟镜','过肩镜','低角度','高角度','虫眼视角','旋转镜','鸟瞰顶拍','遮挡揭示','穿越镜头','拉焦切换','子弹时间','贴地穿越','螺旋上升','环绕下降','低角揭示','跟随推进','低弧绕行'];
+  const names = ['摇镜','移镜','横移','升降镜','环绕镜','变焦推拉','手持抖动','甩镜','主观镜头','主观移动','无人机航拍','光学变焦','前跟镜','侧跟镜','过肩镜','低角度','高角度','虫眼视角','旋转镜','鸟瞰顶拍','遮挡揭示','穿越镜头','拉焦切换','焦点转移','子弹时间','贴地穿越','螺旋上升','环绕下降','低角揭示','跟随推进','低弧绕行','细节到全景','前景擦过','360度环绕','顶视跟随','低角度跟随','斜角跟拍','人体固定机位','主观倒地','过肩推进','侧后跟随','环绕推进','FPV 俯冲','推近拉焦','急推','摇摄揭示','镜面反射揭示','大范围移动延时','升格慢动作','速度渐变','倒放','甩镜转场','跳切','匹配剪辑','一镜到底','伪监控','伪录像','伪手机','老鼠机位','蚊子机位','鸟类机位','宠物机位','定场远景','远景','全景','牛仔镜头','中景','中近景','近景','特写','极特写','微距','黄金时刻','蓝调时刻','正午硬光','阴天柔光','伦勃朗光','明暗对照','剪影逆光','霓虹夜景','烛光','月光','体积光','实用街灯','生物荧光'];
   for (const name of names) {
     const rows = filterRecords(motionPayload.records, 'all', name);
     assert.ok(rows.length > 0, name);

@@ -93,9 +93,9 @@ class StyleTests(unittest.TestCase):
 
     def test_unified_lookup_and_native_single_language_outputs(self):
         data=movies.browser_catalog()
-        self.assertEqual(len(data['records']),114)
-        self.assertEqual(sum(r['available'] for r in data['records']),114)
-        self.assertEqual(sum(r['kind']=='motion' for r in data['records']),40)
+        self.assertEqual(len(data['records']),173)
+        self.assertEqual(sum(r['available'] for r in data['records']),173)
+        self.assertEqual(sum(r['kind']=='motion' for r in data['records']),99)
         self.assertEqual(sum(r['kind']=='style' for r in data['records']),74)
         for identifier in ('style_unknown','../style_risograph','style_risograph.mp4'):
             self.assertIsInstance(Node.VALIDATE_INPUTS(identifier),str)
@@ -120,7 +120,7 @@ class StyleRouteTests(unittest.IsolatedAsyncioTestCase):
         self.client=TestClient(TestServer(app));await self.client.start_server()
     async def asyncTearDown(self):await self.client.close()
     async def test_unified_and_legacy_catalogs_and_safe_range_assets(self):
-        for endpoint,count in [('catalog',110),('motion_catalog',40),('style_catalog',74),('cinematic_catalog',114)]:
+        for endpoint,count in [('catalog',110),('motion_catalog',99),('style_catalog',74),('cinematic_catalog',173)]:
             response=await self.client.get('/cinematic_gallery/'+endpoint)
             self.assertEqual(response.status,200)
             data=await response.json();self.assertEqual(len(data['records']),count)
